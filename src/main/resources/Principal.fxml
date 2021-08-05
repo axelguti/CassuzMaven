@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controladores.ControllerPrincipal">
+   <TabPane layoutX="-6.0" prefHeight="791.0" prefWidth="1353.0" tabClosingPolicy="UNAVAILABLE">
+      <Tab text="Promotor">
+         <AnchorPane accessibleRole="IMAGE_VIEW" minHeight="0.0" minWidth="0.0" prefHeight="762.0" prefWidth="1330.0">
+            <ImageView fitHeight="765.0" fitWidth="1359.0" layoutX="-2.0" layoutY="-2.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+            <TableView fx:id="tblDatos" layoutX="60.0" layoutY="344.0" onMouseClicked="#datos" prefHeight="348.0" prefWidth="1242.0">
+               <columns>
+                  <TableColumn fx:id="tcDni" prefWidth="82.0" text="Dni" />
+                  <TableColumn fx:id="tcNombres" prefWidth="183.0" text="Nombres" />
+                  <TableColumn fx:id="tcApellidos" prefWidth="210.0" text="Apellidos" />
+                  <TableColumn fx:id="tcDireccion" prefWidth="184.0" text="Direccion" />
+                  <TableColumn fx:id="tcTelefono" prefWidth="98.0" text="Telefono" />
+                  <TableColumn fx:id="tcRecomendado" prefWidth="153.0" text="Recomendado" />
+                  <TableColumn fx:id="tcCorreo" prefWidth="157.0" text="FechaNacimiento" />
+                  <TableColumn fx:id="tcFecha" editable="false" prefWidth="197.0" sortable="false" text="Fecha de Inscripcion" />
+               </columns>
+            </TableView>
+            <Pane layoutX="60.0" layoutY="40.0" prefHeight="220.0" prefWidth="1073.0" style="-fx-background-color: white;">
+               <effect>
+                  <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                     <color>
+                        <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <TextField fx:id="txtDni" layoutX="99.0" layoutY="45.0" onKeyTyped="#limitarCaracteres" prefHeight="25.0" prefWidth="197.0" promptText="DNI">
+               </TextField>
+               <Label layoutX="6.0" layoutY="50.0" prefHeight="17.0" prefWidth="35.0" text="DNI" />
+               <Label layoutX="6.0" layoutY="93.0" prefHeight="17.0" prefWidth="65.0" text="Direccion" />
+               <Label layoutX="444.0" prefHeight="35.0" prefWidth="149.0" text="Promotores">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="txtNombres" layoutX="452.0" layoutY="46.0" prefHeight="25.0" prefWidth="201.0" promptText="Nombres">
+               </TextField>
+               <Label layoutX="322.0" layoutY="49.0" prefHeight="17.0" prefWidth="69.0" text="Nombres" />
+               <TextField fx:id="txtApellidos" layoutX="796.0" layoutY="46.0" prefHeight="25.0" prefWidth="225.0" promptText="Apellidos">
+               </TextField>
+               <Label layoutX="666.0" layoutY="50.0" prefHeight="17.0" prefWidth="65.0" text="Apellidos" />
+               <TextField fx:id="txtDireccion" layoutX="99.0" layoutY="89.0" prefHeight="25.0" prefWidth="199.0" promptText="Direccion">
+               </TextField>
+               <Label layoutX="322.0" layoutY="97.0" prefHeight="17.0" prefWidth="65.0" text="Telefono" />
+               <TextField fx:id="txtTelefono" layoutX="452.0" layoutY="93.0" prefHeight="25.0" prefWidth="200.0" promptText="Telefono">
+               </TextField>
+               <Label layoutX="666.0" layoutY="97.0" prefHeight="17.0" prefWidth="97.0" text="Feha Nacimiento" />
+               <DatePicker fx:id="dpFechaNacimiento" layoutX="796.0" layoutY="93.0" prefHeight="25.0" prefWidth="225.0" />
+               <Label layoutX="322.0" layoutY="148.0" prefHeight="17.0" prefWidth="115.0" text="Recomendado por " />
+               <TextField fx:id="txtRecomendado" layoutX="452.0" layoutY="144.0" prefHeight="25.0" prefWidth="202.0" promptText="Recomendado">
+               </TextField>
+               <Button layoutX="844.0" layoutY="165.0" onAction="#Limpiar" prefHeight="30.0" prefWidth="64.0" text="Limpiar">
+               </Button>
+            </Pane>
+            <Label layoutX="305.0" layoutY="297.0" prefHeight="17.0" prefWidth="65.0" text="Buscar" textFill="#ffffffd9">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtBuscar" layoutX="387.0" layoutY="298.0" onMouseClicked="#buscar">
+            </TextField>
+            <Button layoutX="1174.0" layoutY="74.0" onAction="#Registrar" prefHeight="30.0" prefWidth="125.0" text="Registrar">
+            </Button>
+            <Button layoutX="1174.0" layoutY="135.0" onAction="#Modificar" prefHeight="30.0" prefWidth="125.0" text="Modificar">
+            </Button>
+            <Button layoutX="1174.0" layoutY="196.0" onAction="#Eliminar" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
+            <Button layoutX="209.0" layoutY="705.0" onAction="#Mostrar" prefHeight="25.0" prefWidth="64.0" text="Mostrar">
+            </Button>
+         </AnchorPane>
+      </Tab>
+      <Tab text="Usuarios">
+         <AnchorPane accessibleRole="COMBO_BOX" minHeight="0.0" minWidth="0.0" prefHeight="750.0" prefWidth="1298.0">
+            <ImageView fitHeight="765.0" fitWidth="1359.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+            <Pane layoutX="60.0" layoutY="37.0" prefHeight="220.0" prefWidth="1073.0" style="-fx-background-color: white;">
+               <effect>
+                  <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                     <color>
+                        <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <TextField fx:id="txtUNombre" layoutX="99.0" layoutY="45.0" prefHeight="25.0" prefWidth="197.0" promptText="Nombre">
+               </TextField>
+               <Label layoutX="6.0" layoutY="50.0" prefHeight="17.0" prefWidth="58.0" text="Nombres" />
+               <Label layoutX="6.0" layoutY="93.0" prefHeight="17.0" prefWidth="65.0" text="Usuario" />
+               <Label layoutX="484.0" prefHeight="35.0" prefWidth="90.0" text="USUARIOS">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="txtUApellido" layoutX="430.0" layoutY="45.0" prefHeight="25.0" prefWidth="229.0" promptText="Apellidos">
+               </TextField>
+               <TextField fx:id="txtUTelefono" layoutX="783.0" layoutY="46.0" prefHeight="25.0" prefWidth="229.0" promptText="Telefono">
+               </TextField>
+               <Label layoutX="322.0" layoutY="49.0" prefHeight="17.0" prefWidth="65.0" text="Apellidos" />
+               <TextField fx:id="txtUUsuario" layoutX="99.0" layoutY="89.0" prefHeight="25.0" prefWidth="199.0" promptText="Usuario">
+               </TextField>
+               <Label layoutX="322.0" layoutY="97.0" prefHeight="17.0" prefWidth="65.0" text="Contraseña" />
+               <Label layoutX="666.0" layoutY="97.0" prefHeight="17.0" prefWidth="101.0" text="Repita Contraseña" />
+               <Button layoutX="844.0" layoutY="165.0" onAction="#LimpiarUsuario" prefHeight="30.0" prefWidth="64.0" text="Limpiar">
+               </Button>
+               <Label layoutX="666.0" layoutY="50.0" prefHeight="17.0" prefWidth="65.0" text="Telefono" />
+               <PasswordField fx:id="txtUContraseña" layoutX="432.0" layoutY="93.0" prefHeight="25.0" prefWidth="229.0" promptText="Conraseña" />
+               <PasswordField fx:id="txtURepiteContraseña" layoutX="782.0" layoutY="98.0" prefHeight="25.0" prefWidth="229.0" promptText="Conraseña" />
+               <Label layoutX="322.0" layoutY="157.0" prefHeight="17.0" prefWidth="65.0" text="Rol" />
+               <ComboBox fx:id="cmbRol" layoutX="432.0" layoutY="153.0" prefHeight="25.0" prefWidth="229.0" promptText="SELECT" />
+            </Pane>
+            <Label layoutX="247.0" layoutY="295.0" prefHeight="27.0" prefWidth="90.0" text="Buscar Por" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtUBuscar" layoutX="580.0" layoutY="296.0" onMouseClicked="#BuscarUsuario">
+            </TextField>
+            <Button layoutX="1174.0" layoutY="74.0" onAction="#RegistrarUsuario" prefHeight="30.0" prefWidth="125.0" text="Registrar">
+            </Button>
+            <Button layoutX="1174.0" layoutY="135.0" onAction="#ModificarUsuario" prefHeight="30.0" prefWidth="125.0" text="Modificar">
+            </Button>
+            <Button layoutX="1174.0" layoutY="196.0" onAction="#EliminarUsuario" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
+            <TableView fx:id="tblUDatos" layoutX="60.0" layoutY="344.0" onMouseClicked="#datosUsuario" prefHeight="348.0" prefWidth="1242.0">
+               <columns>
+                  <TableColumn fx:id="tcUNombre" prefWidth="306.0" text="Nombres" />
+                  <TableColumn fx:id="tcUApellido" prefWidth="333.0" text="Apellidos" />
+                  <TableColumn fx:id="tcUTelefono" prefWidth="113.0" text="Telefono" />
+                  <TableColumn fx:id="tcUUsuario" prefWidth="176.0" text="Usuario" />
+                  <TableColumn fx:id="tcUContraseña" prefWidth="151.0" text="Contraseña" />
+                  <TableColumn fx:id="tcURol" prefWidth="162.0" text="Rol" />
+               </columns>
+            </TableView>
+            <Button layoutX="209.0" layoutY="705.0" onAction="#MostrarUsuario" prefHeight="25.0" prefWidth="64.0" text="Mostrar">
+            </Button>
+            <ComboBox fx:id="cmbBuscarUsuarios" layoutX="387.0" layoutY="296.0" prefWidth="150.0" promptText="Select" />
+         </AnchorPane>
+      </Tab>
+      <Tab text="Catalogos">
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <ImageView fitHeight="765.0" fitWidth="1359.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+            <Pane layoutX="28.0" layoutY="44.0" prefHeight="517.0" prefWidth="405.0" style="-fx-background-color: white;">
+               <effect>
+                  <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                     <color>
+                        <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <DatePicker fx:id="dpFechaIngreso" layoutX="79.0" layoutY="186.0" prefHeight="25.0" prefWidth="200.0" promptText="dd/mm/aa" />
+               <TextField fx:id="txtCatalogo" layoutX="82.0" layoutY="259.0" prefHeight="25.0" prefWidth="197.0" promptText="Catalogo">
+               </TextField>
+               <Label layoutX="143.0" layoutY="229.0" prefHeight="17.0" prefWidth="58.0" text="Catalogo" />
+               <Label layoutX="125.0" layoutY="303.0" prefHeight="18.0" prefWidth="95.0" text="Representante" />
+               <Label layoutX="124.0" layoutY="14.0" prefHeight="35.0" prefWidth="107.0" text="CATALOGOS">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label layoutX="140.0" layoutY="375.0" prefHeight="17.0" prefWidth="65.0" text="Telefono" />
+               <TextField fx:id="txtRepresentante" layoutX="86.0" layoutY="339.0" prefHeight="25.0" prefWidth="199.0" promptText="Representante">
+               </TextField>
+               <TextField fx:id="txtCTelefono" layoutX="81.0" layoutY="412.0" prefHeight="25.0" prefWidth="199.0" promptText="Telefono">
+               </TextField>
+               <Button layoutX="311.0" layoutY="437.0" onAction="#LimpiarCatalogo" prefHeight="25.0" prefWidth="64.0" text="Limpiar">
+               </Button>
+               <Label layoutX="165.0" layoutY="65.0" prefHeight="17.0" prefWidth="26.0" text="ID" />
+               <TextField fx:id="txtIdCatalogo" disable="true" editable="false" layoutX="82.0" layoutY="97.0" prefHeight="25.0" prefWidth="197.0" />
+               <Label layoutX="127.0" layoutY="150.0" text="Fecha de Ingreso" />
+            </Pane>
+            <Pane layoutX="477.0" layoutY="44.0" prefHeight="673.0" prefWidth="839.0" style="-fx-background-color: white;">
+               <effect>
+                  <Glow />
+               </effect>
+               <TableView fx:id="tblDatosCatalogo" layoutX="14.0" layoutY="73.0" onMouseClicked="#datosCatalogo" prefHeight="518.0" prefWidth="804.0">
+                  <columns>
+                     <TableColumn fx:id="tcNumero" prefWidth="75.0" sortable="false" text="Nro" />
+                     <TableColumn fx:id="tcCatalogo" prefWidth="103.0" sortable="false" text="Catalogo" />
+                     <TableColumn fx:id="tcRepresentante" prefWidth="236.0" sortable="false" text="Representante" />
+                     <TableColumn fx:id="tcCTelefono" prefWidth="135.0" text="Telefono" />
+                     <TableColumn fx:id="tcEstadoCatalogo" prefWidth="130.0" sortable="false" text="Estado" />
+                  </columns>
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  </columnResizePolicy>
+               </TableView>
+               <Label layoutX="178.0" layoutY="31.0" text="Buscar">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="txtCBuscar" layoutX="267.0" layoutY="31.0" onMouseClicked="#BuscarCatalogo" />
+               <Button layoutX="117.0" layoutY="608.0" mnemonicParsing="false" onAction="#MostrarCatalogo" text="Mostrar" />
+            </Pane>
+            <Button fx:id="btnRegistrarCatalogo" layoutX="40.0" layoutY="636.0" onAction="#RegistrarCatalogo" prefHeight="27.0" prefWidth="70.0" text="Registrar">
+            </Button>
+            <Button layoutX="144.0" layoutY="637.0" onAction="#EliminarCatalogo" prefHeight="26.0" prefWidth="68.0" text="Eliminar" />
+            <Button layoutX="241.0" layoutY="636.0" onAction="#ModificarCatalogo" prefHeight="28.0" prefWidth="74.0" text="Modificar">
+
+            </Button>
+         </AnchorPane>
+      </Tab>
+      <Tab text="Lista de Precios">
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <ImageView fitHeight="765.0" fitWidth="1359.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+            <TableView fx:id="tblPDatos" layoutX="63.0" layoutY="64.0" onMouseClicked="#ListaPrecios" prefHeight="631.0" prefWidth="1076.0">
+               <columns>
+                  <TableColumn fx:id="tcPrecioPagina" editable="false" prefWidth="91.0" text="Pagina" />
+                  <TableColumn fx:id="tcPrecioMarca" editable="false" prefWidth="109.0" text="Marca" />
+                  <TableColumn fx:id="tcPrecioEstilo" editable="false" prefWidth="170.0" text="Estilo" />
+                  <TableColumn fx:id="tcPrecioColor" editable="false" prefWidth="304.0" text="Color" />
+                  <TableColumn fx:id="tcPrecioCostoPublico" editable="false" prefWidth="151.0" text="Costo Publico" />
+                  <TableColumn fx:id="tcPrecioCostoPromotor" editable="false" prefWidth="250.0" sortable="false" text="Costo Promotor" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <Label layoutX="587.0" layoutY="14.0" prefHeight="17.0" prefWidth="65.0" text="Buscar" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtBProductos" layoutX="670.0" layoutY="15.0" onMouseClicked="#buscarProductos" promptText="Buscar" />
+            <Button fx:id="btnImportar" layoutX="1192.0" layoutY="367.0" onAction="#importarPrecios" prefHeight="25.0" prefWidth="80.0" text="Importar" />
+            <Button layoutX="231.0" layoutY="709.0" mnemonicParsing="false" onAction="#MostrarPrecios" text="Mostrar" />
+         </AnchorPane>
+      </Tab>
+      <Tab text="Realizar Pedidos">
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <ImageView fitHeight="765.0" fitWidth="1366.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+            <Pane layoutX="533.0" layoutY="21.0" prefHeight="265.0" prefWidth="628.0" style="-fx-background-color: white;">
+               <effect>
+                  <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                     <color>
+                        <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <ComboBox fx:id="cmbCatalogosP" editable="true" layoutX="84.0" layoutY="45.0" onMouseClicked="#cmbmuestracata" prefHeight="25.0" prefWidth="194.0" promptText="Catalogos" />
+               <Label layoutX="22.0" layoutY="48.0" prefHeight="15.0" prefWidth="58.0" text="Catalogo" />
+               <TextField fx:id="txtPPagina" layoutX="373.0" layoutY="45.0" prefHeight="25.0" prefWidth="228.0" promptText="Pagina" />
+               <TextField fx:id="txtPCodigo" layoutX="84.0" layoutY="97.0" prefHeight="25.0" prefWidth="194.0" promptText="Codigo" />
+               <TextField fx:id="txtPMarca" layoutX="373.0" layoutY="97.0" prefHeight="25.0" prefWidth="228.0" promptText="Marca" />
+               <Label layoutX="303.0" layoutY="101.0" prefHeight="17.0" prefWidth="65.0" text="Marca" />
+               <TextField fx:id="txtPColor" layoutX="84.0" layoutY="143.0" prefHeight="25.0" prefWidth="194.0" promptText="Color" />
+               <TextField fx:id="txtPPrecio" layoutX="373.0" layoutY="145.0" prefHeight="25.0" prefWidth="228.0" promptText="Precio" />
+               <Label layoutX="303.0" layoutY="48.0" prefHeight="17.0" prefWidth="58.0" text="Pagina" />
+               <Label layoutX="22.0" layoutY="101.0" prefHeight="17.0" prefWidth="46.0" text="Codigo" />
+               <Label layoutX="22.0" layoutY="147.0" prefHeight="17.0" prefWidth="45.0" text="Color" />
+               <Label layoutX="233.0" layoutY="8.0" prefHeight="35.0" prefWidth="90.0" text="Pedido N°">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <Label layoutX="299.0" layoutY="147.0" prefHeight="17.0" prefWidth="43.0" text="Precio" />
+               <Label layoutX="22.0" layoutY="193.0" prefHeight="17.0" prefWidth="28.0" text="Talla" />
+               <TextField fx:id="txtPTalla" layoutX="84.0" layoutY="189.0" prefHeight="25.0" prefWidth="194.0" promptText="Talla" />
+               <Button layoutX="511.0" layoutY="199.0" onAction="#LimpiarPedidos" prefHeight="30.0" prefWidth="64.0" text="Limpiar" />
+               <Label fx:id="lblIdpedido" layoutX="337.0" layoutY="12.0" prefHeight="17.0" prefWidth="49.0">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+            </Pane>
+            <Label layoutX="468.0" layoutY="322.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txtBPedidos" layoutX="740.0" layoutY="323.0" onMouseClicked="#buscarPedidos" promptText="Buscar" />
+            <Button layoutX="1184.0" layoutY="75.0" onAction="#RegistrarPedidos" prefHeight="30.0" prefWidth="125.0" text="Registrar" />
+            <Button fx:id="btnModificarProductos" layoutX="1184.0" layoutY="145.0" onAction="#ModificarPedidos" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
+            <Button layoutX="1184.0" layoutY="227.0" onAction="#EliminarPedidos" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
+            <Button fx:id="btnMostrarPedidos" layoutX="241.0" layoutY="719.0" mnemonicParsing="false" onAction="#mostrarPedidos" text="Mostrar" />
+            <Pane layoutX="78.0" layoutY="20.0" prefHeight="267.0" prefWidth="430.0" style="-fx-background-color: white;">
+               <effect>
+                  <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                     <color>
+                        <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <ComboBox fx:id="cmbPromotorPedido" editable="true" layoutX="142.0" layoutY="49.0" onAction="#buscaPromotor" onMouseClicked="#muestraPromotorPedido" prefHeight="25.0" prefWidth="120.0" promptText="DNI" />
+               <Label layoutX="34.0" layoutY="53.0" text="DNI" />
+               <Label layoutX="34.0" layoutY="103.0" text="Apellidos" />
+               <Label layoutX="34.0" layoutY="145.0" text="Nombres" />
+               <Label layoutX="177.0" layoutY="14.0" text="Promotor">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="txtApellidoPromotorPedido" layoutX="141.0" layoutY="99.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
+               <TextField fx:id="txtNombrePromotorPedido" layoutX="140.0" layoutY="141.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
+               <Label layoutX="34.0" layoutY="188.0" prefHeight="17.0" prefWidth="71.0" text="Tipo Pago" />
+               <ComboBox fx:id="cmbTipoPago" layoutX="140.0" layoutY="184.0" prefWidth="150.0" />
+               <TextField fx:id="txtBancoPromotor" layoutX="140.0" layoutY="225.0" prefHeight="25.0" prefWidth="255.0" promptText="Banco" />
+               <Label layoutX="34.0" layoutY="229.0" prefHeight="17.0" prefWidth="35.0" text="Banco" />
+            </Pane>
+            <TableView fx:id="tblDatosPedidos" editable="true" layoutX="72.0" layoutY="357.0" onMouseClicked="#ListaPedidos" prefHeight="347.0" prefWidth="1261.0">
+               <columns>
+                  <TableColumn fx:id="tcPedidoID" editable="false" prefWidth="54.0" resizable="false" text="N°" />
+                  <TableColumn fx:id="tcPedidoDni" editable="false" prefWidth="109.0" text="DNI" />
+                  <TableColumn fx:id="tcPedidoNombres" editable="false" prefWidth="182.0" resizable="false" text="Nombres" />
+                  <TableColumn fx:id="tcPedidosCatalogo" prefWidth="143.0" resizable="false" text="Catalogo" />
+                  <TableColumn fx:id="tcPedidoPagina" prefWidth="81.0" resizable="false" text="Pagina" />
+                  <TableColumn fx:id="tcPedidosCodigo" prefWidth="124.0" resizable="false" text="Codigo" />
+                  <TableColumn fx:id="tcPedidosMarca" prefWidth="129.0" resizable="false" text="Marca" />
+                  <TableColumn fx:id="tcPedidosColor" minWidth="0.0" prefWidth="127.0" resizable="false" text="Color" />
+                  <TableColumn fx:id="tcPedidosTalla" minWidth="0.0" prefWidth="69.0" resizable="false" sortable="false" text="Talla" />
+                  <TableColumn fx:id="tcPedidosPrecio" minWidth="0.0" prefWidth="132.0" resizable="false" text="Precio" />
+                  <TableColumn fx:id="tcFechaPedido" minWidth="0.0" prefWidth="110.0" resizable="false" sortable="false" text="Fecha" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <ComboBox fx:id="cmbBuscarPedido" layoutX="572.0" layoutY="323.0" prefWidth="150.0" promptText="Select" />
+         </AnchorPane>
+      </Tab>
+      <Tab text="Estado del Pedido">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="765.0" fitWidth="1366.0">
+                     <image>
+                        <Image url="@img/asdsa.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="btnMostrarPedidos1" layoutX="241.0" layoutY="719.0" mnemonicParsing="false" onAction="#mostrarPedidos" text="Mostrar" />
+                  <TableView fx:id="tblDatosPedidos2" editable="true" layoutX="46.0" layoutY="108.0" onMouseClicked="#ListaPedidos" prefHeight="375.0" prefWidth="1245.0">
+                     <columns>
+                        <TableColumn fx:id="tcPedidoID2" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                        <TableColumn fx:id="tcPedidoDni2" editable="false" prefWidth="96.0" text="DNI" />
+                        <TableColumn fx:id="tcPedidoNombres2" editable="false" prefWidth="193.0" resizable="false" text="Nombres" />
+                        <TableColumn fx:id="tcPedidosCatalogo1" prefWidth="143.0" resizable="false" text="Catalogo" />
+                        <TableColumn fx:id="tcPedidosCodigo1" prefWidth="104.0" resizable="false" text="Codigo" />
+                        <TableColumn fx:id="tcPedidosMarca1" prefWidth="94.0" resizable="false" text="Marca" />
+                        <TableColumn fx:id="tcPedidosColor1" minWidth="0.0" prefWidth="97.0" resizable="false" text="Color" />
+                        <TableColumn fx:id="tcPedidosTalla1" minWidth="0.0" prefWidth="68.0" resizable="false" sortable="false" text="Talla" />
+                        <TableColumn fx:id="tcPedidosPrecio1" minWidth="0.0" prefWidth="68.0" resizable="false" text="Precio" />
+                        <TableColumn fx:id="tcFechaPedido1" minWidth="0.0" prefWidth="72.0" resizable="false" sortable="false" text="Fecha" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <Label layoutX="419.0" layoutY="50.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtBEstadoPedido" layoutX="691.0" layoutY="51.0" onMouseClicked="#buscar" promptText="Buscar" />
+                  <ComboBox fx:id="cmbBuscarEstadoPedido" layoutX="523.0" layoutY="51.0" prefWidth="150.0" promptText="Select" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab text="Caja">
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <children>
+               <ImageView fitHeight="765.0" fitWidth="1366.0">
+                  <Image url="@img/asdsa.jpg" />
+               </ImageView>
+               <Pane layoutX="65.0" layoutY="114.0" prefHeight="311.0" prefWidth="430.0" style="-fx-background-color: white;">
+                  <effect>
+                     <DropShadow height="53.62" radius="16.6725" spread="0.29" width="15.07">
+                        <color>
+                           <Color red="0.06578947603702545" green="0.020406920462846756" blue="0.020406920462846756" />
+                        </color>
+                     </DropShadow>
+                  </effect>
+                  <Label layoutX="34.0" layoutY="92.0" prefHeight="17.0" prefWidth="72.0" text="Descripcion" />
+                  <Label layoutX="34.0" layoutY="195.0" text="Monto" />
+                  <Label layoutX="176.0" layoutY="23.0" text="Caja">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtNombrePromotorPedido1" layoutX="140.0" layoutY="191.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
+                  <TextArea layoutX="140.0" layoutY="92.0" prefHeight="77.0" prefWidth="254.0" />
+                  <Button fx:id="btnLmpiarCaja" layoutX="153.0" layoutY="259.0" onAction="#LimpiarCaja" prefHeight="30.0" prefWidth="125.0" text="Limpiar" />
+               </Pane>
+               <TableView fx:id="tblDatosCajaDelDia" editable="true" layoutX="604.0" layoutY="104.0" onMouseClicked="#ListaPedidos" prefHeight="255.0" prefWidth="723.0">
+                  <columns>
+                     <TableColumn fx:id="tcPedidoID1" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                     <TableColumn fx:id="tcPedidoDni1" editable="false" prefWidth="96.0" text="Descripcion" />
+                     <TableColumn fx:id="tcPedidoNombres1" editable="false" prefWidth="193.0" resizable="false" text="Monto" />
+                     <TableColumn fx:id="tcPedidosApellido1" editable="false" prefWidth="353.0" resizable="false" text="hora" />
+                  </columns>
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  </columnResizePolicy>
+               </TableView>
+               <Label layoutX="736.0" layoutY="32.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <TextField fx:id="txtBCaja" layoutX="1005.0" layoutY="33.0" onMouseClicked="#buscarCaja" promptText="Buscar" />
+               <Button fx:id="btnAgregarCaja" layoutX="65.0" layoutY="444.0" onAction="#AgregarCaja" prefHeight="30.0" prefWidth="125.0" text="Agregar" />
+               <Button fx:id="btnModificarCaja" layoutX="370.0" layoutY="444.0" onAction="#ModificarCaja" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
+               <Button fx:id="btnEliminarCaja" layoutX="218.0" layoutY="444.0" onAction="#EliminarCaja" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
+               <ComboBox fx:id="cmbBuscarCaja" layoutX="810.0" layoutY="33.0" prefWidth="150.0" promptText="Select" />
+               <Label fx:id="lblCaja" layoutX="1184.0" layoutY="11.0" prefHeight="70.0" prefWidth="118.0" textFill="#29d57c">
+                  <font>
+                     <Font size="48.0" />
+                  </font>
+               </Label>
+               <TableView fx:id="tblDatosCajaPorDia" editable="true" layoutX="604.0" layoutY="427.0" onMouseClicked="#ListaPedidos" prefHeight="255.0" prefWidth="723.0">
+                  <columns>
+                     <TableColumn fx:id="tcPedidoID11" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                     <TableColumn fx:id="tcPedidoDni11" editable="false" prefWidth="96.0" text="dia" />
+                     <TableColumn fx:id="tcPedidoNombres11" editable="false" prefWidth="193.0" resizable="false" text="Monto total" />
+                     <TableColumn fx:id="tcPedidosApellido11" editable="false" prefWidth="353.0" resizable="false" text="fecha" />
+                  </columns>
+                  <columnResizePolicy>
+                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  </columnResizePolicy>
+               </TableView>
+            </children>
+         </AnchorPane>
+      </Tab>
+      <Tab text="Reportes">
+         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+            <ImageView fitHeight="765.0" fitWidth="1366.0">
+               <Image url="@img/asdsa.jpg" />
+            </ImageView>
+         </AnchorPane>
+      </Tab>
+   </TabPane>
+</AnchorPane>
