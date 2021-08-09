@@ -3,6 +3,7 @@ use BDCASSUZ;
 
 
 /*tablas Promotor*/
+drop table tblpromotor
 CREATE TABLE tblpromotor(
 	
 	dnipromotor varchar(8) primary key,
@@ -212,7 +213,6 @@ end
 
 EXEC SP_R_CATALOGO
 
-drop procedure SP_U_CA
 /*Modificar Catalogo*/
 create procedure SP_U_CATALOGO(
 @idcatalogo as int,
@@ -231,6 +231,19 @@ telefcatalogo=@telefcatalogo
 where idcatalogo=@idcatalogo
 
 end
+
+
+create procedure SP_U_CATALOGOESTADO(
+@idcatalogo as int,
+@estadocatalogo as varchar(20))
+as
+begin
+
+update  tblcatalogo set estadocatalogo=@estadocatalogo
+where idcatalogo=@idcatalogo
+end
+
+
 
 /*Eliminar catalogo*/
 create procedure SP_D_CATALOGO(@idcatalogo as varchar(50))
@@ -268,7 +281,7 @@ as
 ;
 
 
-
+drop table tblpedido
 /*tabla de pedidos*/
 create table tblpedido(
 idpedido int primary key identity,
@@ -280,6 +293,8 @@ tallaproducto varchar(5),
 precioproducto decimal(7,2),
 dnipromotor varchar(8),
 codproducto varchar(15),
+tipopago varchar(20),
+banco varchar(20),
 idcatalogo int,
 foreign key (dnipromotor) references tblpromotor(dnipromotor),
 foreign key (idcatalogo) references tblcatalogo(idcatalogo))
@@ -360,6 +375,34 @@ delete from tblpedido where idpedido=@idpedido
 
 end
 
+/*crear tabla de la caja*/
+create table tblcaja(
+idcaja int primary key identity,
+descripcion varchar(100),
+monto decimal(7,2),
+fecha date,
+hora varchar(50))
+
+/*crear caja*/
+create procedure SP_C_CAJA(
+@descripcion varchar(100),
+@monto decimal(7,2),
+@hora varchar(50))
+as
+begin
+
+	insert into tblcaja(descripcion,monto,hora) values(@descripcion,@monto,@hora)
+
+end
+
+/*leer caja*/
+create procedure SP_R_CAJA
+as
+begin
+
+	select  from tblcaja
+
+end
 
 /*Pruebas de los procedimientos*/
 
