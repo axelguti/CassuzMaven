@@ -374,36 +374,45 @@ begin
 delete from tblpedido where idpedido=@idpedido
 
 end
-
+DROP TABLE tblcaja
 /*crear tabla de la caja*/
 create table tblcaja(
 idcaja int primary key identity,
 descripcion varchar(100),
 monto decimal(7,2),
 fecha date,
-hora varchar(50))
+hora datetime)
 
 /*crear caja*/
-create procedure SP_C_CAJA(
+alter procedure SP_C_CAJA(
 @descripcion varchar(100),
 @monto decimal(7,2),
-@hora varchar(50))
+@hora datetime,
+@fecha date)
 as
 begin
-
-	insert into tblcaja(descripcion,monto,hora) values(@descripcion,@monto,@hora)
+	
+	insert into tblcaja(descripcion,monto,hora,fecha) values(@descripcion,@monto,@hora,@fecha)
 
 end
 
 /*leer caja*/
-create procedure SP_R_CAJA
+drop procedure SP_C_CAJA
+alter procedure SP_R_CAJA
 as
 begin
-
-	select  from tblcaja
+	select idcaja,descripcion,monto,convert(varchar,fecha,106) as fecha
+	,convert(varchar,hora,108) as hora  from tblcaja order by idcaja asc
 
 end
 
+
+
 /*Pruebas de los procedimientos*/
 
-exec SP_R_CATALOGO
+exec SP_C_CAJA 'ADSD',-200,'10:50','2021-10-02'
+
+
+EXEC SP_R_CAJA
+
+EXEC SP_R_PEDIDO

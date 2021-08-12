@@ -63,6 +63,7 @@ public class CatalogoDTO {
         }else if(getEstado().equalsIgnoreCase("Deshabilitado")){
             buton.setSelected(false);
         }
+
         return buton;
     }
 

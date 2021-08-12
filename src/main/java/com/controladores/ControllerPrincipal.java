@@ -7,6 +7,7 @@ import com.Util.Estado;
 import com.beans.IconTest;
 import com.interfaces.*;
 import com.jfoenix.controls.JFXToggleButton;
+import com.sun.javafx.collections.MappingChange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -16,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -28,11 +30,76 @@ import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ControllerPrincipal extends Component implements Initializable {
+    @FXML
+    private TableColumn<CajaDTO,String> tcFechaCajaDelDia;
+    @FXML
+    private TableColumn<CajaDTO,String> tcFechaCajaPorDia;
+    @FXML
+    private Label lblCajaID;
+    @FXML
+    private TableView<CajaDTO> tblDatosCajaPorDia;
+    @FXML
+    private TableColumn<CajaDTO,String> tcPedidoMontoTotalCaja;
+    @FXML
+    private TableColumn<CajaDTO,String> tcPedidodiaCaja;
+    @FXML
+    private TableColumn<CajaDTO,String> tcPedidoIDCajaDia;
+    @FXML
+    private TextField txtMontoCaja;
+    @FXML
+    private Button btnLimpiarCaja;
+    @FXML
+    private TableView<CajaDTO> tblDatosCajaDelDia;
+    @FXML
+    private TableColumn<CajaDTO,String > tcPedidoIDCaja;
+    @FXML
+    private TableColumn<CajaDTO, String> tcPedidoDescripcionCaja;
+    @FXML
+    private TableColumn<CajaDTO,String> tcPedidoMontoCaja;
+    @FXML
+    private TableColumn<CajaDTO,String> tcPedidosHoraCaja;
+    @FXML
+    private TextArea taDescripcion;
+    @FXML
+    private ComboBox<String> cmbBuscarEstadoPedido;
+    @FXML
+    private TextField txtBEstadoPedido;
+    @FXML
+    private TableColumn<PedidosDTO,String> tcTipoPago;
+    @FXML
+    private TableColumn<PedidosDTO,String> tcBanco;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidoEstadoID;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidoEstadoDni;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidoEstadoNombres;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidosEstadoCatalogo;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidosEstadoCodigo;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidosEstadoMarca;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidosEstadoColor;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcPedidosEstadoPrecio;
+    @FXML
+    private TableColumn<PedidosDTO, String> tcFechaEstadoPedido;
+    @FXML
+    private TableColumn<PedidosDTO, Button> tcPedidosEstado;
+    @FXML
+    private TableView<PedidosDTO> tblDatosEstado;
     @FXML
     private TextField txtBCaja;
     @FXML
@@ -52,7 +119,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private JFXToggleButton estado;
     @FXML
-    private TableColumn<CatalogoDTO,String> tcEstadoCatalogo;
+    private TableColumn<CatalogoDTO,Button> tcEstadoCatalogo;
     @FXML
     private ComboBox<String> cmbBuscarPedido;
     @FXML
@@ -204,27 +271,30 @@ public class ControllerPrincipal extends Component implements Initializable {
     private TableColumn<PromotorDTO, String> tcDni;
     @FXML
     private TableView<PromotorDTO> tblDatos;
-    @FXML
+
     private ObservableList<PromotorDTO> lista;
-    @FXML
+
     private ObservableList<CatalogoDTO> listaCatalogoDTOS;
-    @FXML
+
     private ObservableList<UsuarioDTO> listaUsuarioDTO;
-    @FXML
+
     private ObservableList<String> listaRol;
-    @FXML
+
     private ObservableList<String> cmbcata;
-    @FXML
+
     private ObservableList<String> cmbPromotor;
     @FXML
     private ObservableList<String> tipopago;
-
+    @FXML
+    private ObservableList<String> listaEstado;
     @FXML
     private ObservableList<String> listaBuscarUsuario;
     @FXML
     private ObservableList<String> listaBuscarPedidos;
     @FXML
     private ObservableList<PedidosDTO> listaPedidos;
+
+    private ObservableList<CajaDTO> listaCajaDTO;
     @FXML
     private final CatalogoInterface daoCatalogo = DAOFactory.getCatalogoDAO();
     @FXML
@@ -237,6 +307,9 @@ public class ControllerPrincipal extends Component implements Initializable {
     private final ListaPrecioInterface listaPre = DAOFactory.getListaPrecioDAO();
     @FXML
     private final PedidoInterface pedido = DAOFactory.getPedidoDAO();
+
+    private final CajaInterface caja=DAOFactory.getCajaDAO();
+    @FXML
     private FileChooser filechooser;
 
     @Override
@@ -251,6 +324,61 @@ public class ControllerPrincipal extends Component implements Initializable {
         Importar();
         listaTipoPago();
         toggleButton();
+        mostrarlistaEstado();
+        listaEstado();
+        mostrarCaja();
+        sumaTotalCaja();
+        List<CajaDTO> listar=caja.listar();
+        Map<String,Double> cajasuma=new HashMap<String,Double>();
+        cajasuma=listar.stream().collect(Collectors.groupingBy(CajaDTO::getFecha,Collectors.summingDouble(CajaDTO::getMonto)));
+
+        cajasuma.forEach((fecha,suma)->{
+            System.out.println(fecha+" "+suma);
+        });
+        LocalDateTime hora=LocalDateTime.now();
+
+        switch(LocalDateTime.now().getMonth()){
+
+        }
+        String fech=hora.format(DateTimeFormatter.ofPattern("dd MM yyyy"));
+        Predicate<CajaDTO> pred=a->a.getFecha().equalsIgnoreCase(fech);
+
+        double cajasumas;
+        cajasumas=listar.stream().filter(pred).mapToDouble(CajaDTO::getMonto).sum();
+        System.out.println(cajasumas);
+        System.out.println(LocalDateTime.now());
+
+    }
+
+    private void sumaTotalCaja(){
+        List<CajaDTO> listar=caja.listar();
+        Predicate<CajaDTO> pred=a-> {
+            LocalDateTime.now();
+            return true;
+        };
+
+        double cajasuma;
+        cajasuma=listar.stream().filter(pred).mapToDouble(CajaDTO::getMonto).sum();
+        lblCaja.setText(String.valueOf(cajasuma));
+    }
+
+    private void mostrarlistaEstado(){
+        List<PedidosDTO> listar = pedido.listar();
+        listaPedidos = FXCollections.observableArrayList();
+        tcPedidoEstadoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
+        tcPedidoEstadoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        tcPedidoEstadoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        tcPedidosEstadoCatalogo.setCellValueFactory(new PropertyValueFactory<>("nomCatalogo"));
+        tcPedidosEstadoCodigo.setCellValueFactory(new PropertyValueFactory<>("codProducto"));
+        tcPedidosEstadoMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
+        tcPedidosEstadoColor.setCellValueFactory(new PropertyValueFactory<>("color"));
+        tcPedidosTalla.setCellValueFactory(new PropertyValueFactory<>("talla"));
+        tcPedidosEstadoPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        tcFechaEstadoPedido.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
+        tcTipoPago.setCellValueFactory(new PropertyValueFactory<>("tipopago"));
+        tcBanco.setCellValueFactory(new PropertyValueFactory<>("banco"));
+        listar.forEach(a -> listaPedidos.addAll(a));
+        tblDatosEstado.setItems(listaPedidos);
     }
 
     //Lista de roles
@@ -261,9 +389,15 @@ public class ControllerPrincipal extends Component implements Initializable {
         cmbRol.setItems(listaRol);
     }
 
+    private void listaEstado(){
+        listaEstado=FXCollections.observableArrayList("DNI","Catalogo","Fecha");
+        cmbBuscarEstadoPedido.setItems(listaEstado);
+    }
+
     private void listaTipoPago(){
         tipopago=FXCollections.observableArrayList("Transferencia","Efectivo");
         cmbTipoPago.setItems(tipopago);
+
     }
 
     //Busca a los usuarios
@@ -794,6 +928,7 @@ public class ControllerPrincipal extends Component implements Initializable {
             tcPedidoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
             tcPedidoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
             tcPedidoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+            tcPedidosApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
             tcPedidosCatalogo.setCellValueFactory(new PropertyValueFactory<>("nomCatalogo"));
             tcPedidoPagina.setCellValueFactory(new PropertyValueFactory<>("pagina"));
             tcPedidosCodigo.setCellValueFactory(new PropertyValueFactory<>("codProducto"));
@@ -812,19 +947,19 @@ public class ControllerPrincipal extends Component implements Initializable {
         try {
             PedidosDTO pedidos=datosPedido();
             if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
-                txtPMarca.getText().isEmpty() ||txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
+                txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
                 cmbPromotorPedido.getEditor().getText().isEmpty() || cmbCatalogosP.getEditor().getText().isEmpty()){
                 Error();
             }else{
                 result=pedido.grabar(pedidos);
                 JOptionPane.showMessageDialog(null,result,"Registrar",1);
-                mostrarPedidos();
+
             }
         }catch (NumberFormatException number){
             JOptionPane.showMessageDialog(null, "Error. La pagina o precio no puede ir letras", "Error", 1);
             txtPPagina.setText("");
         }
-
+        mostrarPedidos();
     }
 
     private PedidosDTO datosPedido(){
@@ -838,6 +973,8 @@ public class ControllerPrincipal extends Component implements Initializable {
         pedidos.setMarca(txtPMarca.getText());
         pedidos.setColor(txtPColor.getText());
         pedidos.setTalla(txtPTalla.getText());
+        pedidos.setBanco(txtBancoPromotor.getText());
+        pedidos.setTipopago(cmbTipoPago.getValue());
         pedidos.setPrecio(Double.parseDouble(txtPPrecio.getText()));
         pedidos.setFechaPedido(LocalDate.now());
         return pedidos;
@@ -848,7 +985,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         String result;
         try {
             //Icon icono=new ImageIcon(getClass().getResource("../img/alerta.png"));
-            IconTest icon=new IconTest();
+                IconTest icon=new IconTest();
             PedidosDTO pedidos=datosPedido();
             pedidos.setIdPedido(Integer.parseInt(lblIdpedido.getText()));
             if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
@@ -1014,6 +1151,41 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     @FXML
     private void AgregarCaja(ActionEvent actionEvent) {
+        CajaDTO datos=registrarCaja();
+        if(taDescripcion.getText().isEmpty() || txtMontoCaja.getText().isEmpty()){
+            Error();
+        }else{
+            String result=caja.grabar(datos);
+            JOptionPane.showMessageDialog(null,result,"Registrar",1);
+        }
+        mostrarCaja();
+        sumaTotalCaja();
+    }
+
+    private void conteocaja(){
+
+    }
+
+    private void mostrarCaja(){
+        List<CajaDTO> listar = caja.listar();
+        listaCajaDTO = FXCollections.observableArrayList();
+        tcPedidoIDCaja.setCellValueFactory(new PropertyValueFactory<>("idcaja"));
+        tcPedidoDescripcionCaja.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+        tcPedidoMontoCaja.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        tcPedidosHoraCaja.setCellValueFactory(new PropertyValueFactory<>("hora"));
+        tcFechaCajaDelDia.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        listar.forEach(a -> listaCajaDTO.addAll(a));
+        tblDatosCajaDelDia.setItems(listaCajaDTO);
+    }
+
+    private CajaDTO registrarCaja(){
+        CajaDTO caja=new CajaDTO();
+        LocalDateTime hora=LocalDateTime.now();
+        caja.setDescripcion(taDescripcion.getText());
+        caja.setMonto(Double.parseDouble(txtMontoCaja.getText()));
+        caja.setHora(hora.format(DateTimeFormatter.ofPattern("HH:mm")));
+        caja.setFecha(hora.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        return caja;
     }
 
     @FXML
@@ -1024,6 +1196,69 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void EliminarCaja(ActionEvent actionEvent) {
     }
 
-    public void LimpiarCaja(ActionEvent actionEvent) {
+    @FXML
+    private void LimpiarCaja(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    private void buscarEstadoPedido(MouseEvent mouseEvent) {
+        mostrarlistaEstado();
+        FilteredList<PedidosDTO> filtrar = new FilteredList<>(listaPedidos, b -> true);
+        txtBEstadoPedido.textProperty().addListener((ObservableList, oldValue, newValue) -> {
+            filtrar.setPredicate(pedidosEstado -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (cmbBuscarEstadoPedido.getValue() != null) {
+                    switch (cmbBuscarEstadoPedido.getValue()) {
+                        //Filtrar Por Nombre del Usuario
+                        case "DNI": {
+                            return pedidosEstado.getDni().toLowerCase().contains(lowerCaseFilter);
+                        }
+                        //Filtrar por apellido del Usuario
+                        case "Catalogo": {
+                            return pedidosEstado.getNomCatalogo().toLowerCase().contains(lowerCaseFilter);
+                        }
+                        case "Fecha":{
+                            return  String.valueOf(pedidosEstado.getFechaPedido()).toLowerCase().contains(lowerCaseFilter);
+                        }
+                    }
+                } else {
+                    //Muestra la lista de usuarios
+                    mostrarUsuario();
+                }
+                return false;
+            });
+        });
+        SortedList<PedidosDTO> sorted = new SortedList<>(filtrar);
+        sorted.comparatorProperty().bind(tblDatosEstado.comparatorProperty());
+        tblDatosEstado.setItems(sorted);
+    }
+
+
+
+    @FXML
+    private void tipoPagos(ActionEvent actionEvent) {
+        listaTipoPago();
+        if(cmbTipoPago.getValue().equals("Transferencia")){
+            txtBancoPromotor.setDisable(true);
+
+        }else if(cmbTipoPago.getValue().equals("Efectivo")){
+            txtBancoPromotor.setDisable(false);
+        }
+    }
+
+    @FXML
+    private void ListaCajadelDia(MouseEvent mouseEvent) {
+        CajaDTO mostrar = tblDatosCajaDelDia.getSelectionModel().getSelectedItem();
+        if (mostrar == null) {
+            MostrarLista();
+        } else {
+            lblCajaID.setText(String.valueOf(mostrar.getIdcaja()));
+            taDescripcion.setText(mostrar.getDescripcion());
+            txtMontoCaja.setText(String.valueOf(mostrar.getMonto()));
+        }
     }
 }

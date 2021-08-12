@@ -1,5 +1,7 @@
 package com.DTO;
 
+import javafx.scene.control.ComboBox;
+
 import java.time.LocalDate;
 
 public class PedidosDTO extends PromotorDTO{
@@ -14,23 +16,31 @@ public class PedidosDTO extends PromotorDTO{
     private String codProducto;
     private String tipopago;
     private String banco;
+    private ComboBox<String> estado;
+
+    public ComboBox<String> getEstado() {
+        return estado;
+    }
+
+    public void setEstado(ComboBox<String> estado) {
+        this.estado = estado;
+    }
 
     public String getTipopago() {
         return tipopago;
     }
 
-    public PedidosDTO setTipopago(String tipopago) {
+    public void setTipopago(String tipopago) {
         this.tipopago = tipopago;
-        return this;
+
     }
 
     public String getBanco() {
         return banco;
     }
 
-    public PedidosDTO setBanco(String banco) {
+    public void setBanco(String banco) {
         this.banco = banco;
-        return this;
     }
 
     public String getTalla() {

@@ -20,7 +20,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controladores.ControllerPrincipal">
+<AnchorPane style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controladores.ControllerPrincipal">
    <TabPane layoutX="-6.0" prefHeight="791.0" prefWidth="1353.0" tabClosingPolicy="UNAVAILABLE">
       <Tab text="Promotor">
          <AnchorPane accessibleRole="IMAGE_VIEW" minHeight="0.0" minWidth="0.0" prefHeight="762.0" prefWidth="1330.0">
@@ -320,23 +320,24 @@
                <TextField fx:id="txtApellidoPromotorPedido" layoutX="141.0" layoutY="99.0" prefHeight="25.0" prefWidth="253.0" promptText="Apellidos" />
                <TextField fx:id="txtNombrePromotorPedido" layoutX="140.0" layoutY="141.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
                <Label layoutX="34.0" layoutY="188.0" prefHeight="17.0" prefWidth="71.0" text="Tipo Pago" />
-               <ComboBox fx:id="cmbTipoPago" layoutX="140.0" layoutY="184.0" prefWidth="150.0" />
-               <TextField fx:id="txtBancoPromotor" layoutX="140.0" layoutY="225.0" prefHeight="25.0" prefWidth="255.0" promptText="Banco" />
+               <ComboBox fx:id="cmbTipoPago" layoutX="140.0" layoutY="184.0" onAction="#tipoPagos" prefWidth="150.0" />
+               <TextField fx:id="txtBancoPromotor" disable="true" layoutX="140.0" layoutY="225.0" prefHeight="25.0" prefWidth="255.0" promptText="Banco" />
                <Label layoutX="34.0" layoutY="229.0" prefHeight="17.0" prefWidth="35.0" text="Banco" />
             </Pane>
             <TableView fx:id="tblDatosPedidos" editable="true" layoutX="72.0" layoutY="357.0" onMouseClicked="#ListaPedidos" prefHeight="347.0" prefWidth="1261.0">
                <columns>
                   <TableColumn fx:id="tcPedidoID" editable="false" prefWidth="54.0" resizable="false" text="N°" />
-                  <TableColumn fx:id="tcPedidoDni" editable="false" prefWidth="109.0" text="DNI" />
-                  <TableColumn fx:id="tcPedidoNombres" editable="false" prefWidth="182.0" resizable="false" text="Nombres" />
-                  <TableColumn fx:id="tcPedidosCatalogo" prefWidth="143.0" resizable="false" text="Catalogo" />
-                  <TableColumn fx:id="tcPedidoPagina" prefWidth="81.0" resizable="false" text="Pagina" />
-                  <TableColumn fx:id="tcPedidosCodigo" prefWidth="124.0" resizable="false" text="Codigo" />
-                  <TableColumn fx:id="tcPedidosMarca" prefWidth="129.0" resizable="false" text="Marca" />
-                  <TableColumn fx:id="tcPedidosColor" minWidth="0.0" prefWidth="127.0" resizable="false" text="Color" />
-                  <TableColumn fx:id="tcPedidosTalla" minWidth="0.0" prefWidth="69.0" resizable="false" sortable="false" text="Talla" />
-                  <TableColumn fx:id="tcPedidosPrecio" minWidth="0.0" prefWidth="132.0" resizable="false" text="Precio" />
-                  <TableColumn fx:id="tcFechaPedido" minWidth="0.0" prefWidth="110.0" resizable="false" sortable="false" text="Fecha" />
+                  <TableColumn fx:id="tcPedidoDni" editable="false" prefWidth="73.0" text="DNI" />
+                  <TableColumn fx:id="tcPedidoNombres" editable="false" prefWidth="158.0" resizable="false" text="Nombres" />
+                  <TableColumn fx:id="tcPedidosApellido" prefWidth="123.0" resizable="false" text="Apellidos" />
+                  <TableColumn fx:id="tcPedidosCatalogo" prefWidth="100.0" resizable="false" text="Catalogo" />
+                  <TableColumn fx:id="tcPedidoPagina" prefWidth="89.0" resizable="false" text="Pagina" />
+                  <TableColumn fx:id="tcPedidosCodigo" prefWidth="94.0" resizable="false" text="Codigo" />
+                  <TableColumn fx:id="tcPedidosMarca" prefWidth="87.0" resizable="false" text="Marca" />
+                  <TableColumn fx:id="tcPedidosColor" minWidth="0.0" prefWidth="165.0" resizable="false" text="Color" />
+                  <TableColumn fx:id="tcPedidosTalla" minWidth="0.0" prefWidth="115.0" resizable="false" sortable="false" text="Talla" />
+                  <TableColumn fx:id="tcPedidosPrecio" minWidth="0.0" prefWidth="89.0" resizable="false" text="Precio" />
+                  <TableColumn fx:id="tcFechaPedido" minWidth="0.0" prefWidth="113.0" resizable="false" sortable="false" text="Fecha" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -355,18 +356,20 @@
                      </image>
                   </ImageView>
                   <Button fx:id="btnMostrarPedidos1" layoutX="241.0" layoutY="719.0" mnemonicParsing="false" onAction="#mostrarPedidos" text="Mostrar" />
-                  <TableView fx:id="tblDatosPedidos2" editable="true" layoutX="46.0" layoutY="108.0" onMouseClicked="#ListaPedidos" prefHeight="375.0" prefWidth="1245.0">
+                  <TableView fx:id="tblDatosEstado" editable="true" layoutX="54.0" layoutY="98.0" onMouseClicked="#ListaPedidos" prefHeight="611.0" prefWidth="1243.0">
                      <columns>
-                        <TableColumn fx:id="tcPedidoID2" editable="false" prefWidth="42.0" resizable="false" text="N°" />
-                        <TableColumn fx:id="tcPedidoDni2" editable="false" prefWidth="96.0" text="DNI" />
-                        <TableColumn fx:id="tcPedidoNombres2" editable="false" prefWidth="193.0" resizable="false" text="Nombres" />
-                        <TableColumn fx:id="tcPedidosCatalogo1" prefWidth="143.0" resizable="false" text="Catalogo" />
-                        <TableColumn fx:id="tcPedidosCodigo1" prefWidth="104.0" resizable="false" text="Codigo" />
-                        <TableColumn fx:id="tcPedidosMarca1" prefWidth="94.0" resizable="false" text="Marca" />
-                        <TableColumn fx:id="tcPedidosColor1" minWidth="0.0" prefWidth="97.0" resizable="false" text="Color" />
-                        <TableColumn fx:id="tcPedidosTalla1" minWidth="0.0" prefWidth="68.0" resizable="false" sortable="false" text="Talla" />
-                        <TableColumn fx:id="tcPedidosPrecio1" minWidth="0.0" prefWidth="68.0" resizable="false" text="Precio" />
-                        <TableColumn fx:id="tcFechaPedido1" minWidth="0.0" prefWidth="72.0" resizable="false" sortable="false" text="Fecha" />
+                        <TableColumn fx:id="tcPedidoEstadoID" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                        <TableColumn fx:id="tcPedidoEstadoDni" editable="false" prefWidth="96.0" text="DNI" />
+                        <TableColumn fx:id="tcPedidoEstadoNombres" editable="false" prefWidth="193.0" resizable="false" text="Nombres" />
+                        <TableColumn fx:id="tcPedidosEstadoCatalogo" prefWidth="91.0" resizable="false" text="Catalogo" />
+                        <TableColumn fx:id="tcPedidosEstadoCodigo" prefWidth="109.0" resizable="false" text="Codigo" />
+                        <TableColumn fx:id="tcPedidosEstadoMarca" prefWidth="141.0" resizable="false" text="Marca" />
+                        <TableColumn fx:id="tcPedidosEstadoColor" minWidth="0.0" prefWidth="129.0" resizable="false" text="Color" />
+                        <TableColumn fx:id="tcPedidosEstadoPrecio" minWidth="0.0" prefWidth="70.0" resizable="false" text="Precio" />
+                        <TableColumn fx:id="tcFechaEstadoPedido" minWidth="0.0" prefWidth="68.0" resizable="false" sortable="false" text="Fecha" />
+                        <TableColumn fx:id="tcTipoPago" prefWidth="111.0" resizable="false" text="Tipo Pago" />
+                        <TableColumn fx:id="tcBanco" prefWidth="90.0" resizable="false" text="Banco" />
+                        <TableColumn fx:id="tcPedidosEstado" minWidth="0.0" prefWidth="104.0" resizable="false" text="Estado" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -377,7 +380,7 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtBEstadoPedido" layoutX="691.0" layoutY="51.0" onMouseClicked="#buscar" promptText="Buscar" />
+                  <TextField fx:id="txtBEstadoPedido" layoutX="691.0" layoutY="51.0" onMouseClicked="#buscarEstadoPedido" promptText="Buscar" />
                   <ComboBox fx:id="cmbBuscarEstadoPedido" layoutX="523.0" layoutY="51.0" prefWidth="150.0" promptText="Select" />
                </children>
             </AnchorPane>
@@ -399,47 +402,53 @@
                   </effect>
                   <Label layoutX="34.0" layoutY="92.0" prefHeight="17.0" prefWidth="72.0" text="Descripcion" />
                   <Label layoutX="34.0" layoutY="195.0" text="Monto" />
-                  <Label layoutX="176.0" layoutY="23.0" text="Caja">
+                  <Label layoutX="176.0" layoutY="23.0" text="Caja Nº">
                      <font>
                         <Font size="24.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtNombrePromotorPedido1" layoutX="140.0" layoutY="191.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
-                  <TextArea layoutX="140.0" layoutY="92.0" prefHeight="77.0" prefWidth="254.0" />
-                  <Button fx:id="btnLmpiarCaja" layoutX="153.0" layoutY="259.0" onAction="#LimpiarCaja" prefHeight="30.0" prefWidth="125.0" text="Limpiar" />
+                  <TextField fx:id="txtMontoCaja" layoutX="140.0" layoutY="191.0" prefHeight="25.0" prefWidth="255.0" promptText="Nombres" />
+                  <TextArea fx:id="taDescripcion" layoutX="140.0" layoutY="92.0" prefHeight="77.0" prefWidth="254.0" />
+                  <Button fx:id="btnLimpiarCaja" layoutX="153.0" layoutY="259.0" onAction="#LimpiarCaja" prefHeight="30.0" prefWidth="125.0" text="Limpiar" />
+                  <Label fx:id="lblCajaID" layoutX="268.0" layoutY="23.0" prefHeight="35.0" prefWidth="29.0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
                </Pane>
-               <TableView fx:id="tblDatosCajaDelDia" editable="true" layoutX="604.0" layoutY="104.0" onMouseClicked="#ListaPedidos" prefHeight="255.0" prefWidth="723.0">
+               <TableView fx:id="tblDatosCajaDelDia" editable="true" layoutX="604.0" layoutY="104.0" onMouseClicked="#ListaCajadelDia" prefHeight="255.0" prefWidth="723.0">
                   <columns>
-                     <TableColumn fx:id="tcPedidoID1" editable="false" prefWidth="42.0" resizable="false" text="N°" />
-                     <TableColumn fx:id="tcPedidoDni1" editable="false" prefWidth="96.0" text="Descripcion" />
-                     <TableColumn fx:id="tcPedidoNombres1" editable="false" prefWidth="193.0" resizable="false" text="Monto" />
-                     <TableColumn fx:id="tcPedidosApellido1" editable="false" prefWidth="353.0" resizable="false" text="hora" />
+                     <TableColumn fx:id="tcPedidoIDCaja" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                     <TableColumn fx:id="tcPedidoDescripcionCaja" editable="false" prefWidth="96.0" text="Descripcion" />
+                     <TableColumn fx:id="tcPedidoMontoCaja" editable="false" prefWidth="193.0" resizable="false" text="Monto" />
+                     <TableColumn fx:id="tcPedidosHoraCaja" editable="false" prefWidth="176.0" resizable="false" text="hora" />
+                     <TableColumn fx:id="tcFechaCajaDelDia" prefWidth="192.0" resizable="false" text="Fecha" />
                   </columns>
                   <columnResizePolicy>
                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                   </columnResizePolicy>
                </TableView>
-               <Label layoutX="736.0" layoutY="32.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
+               <Label layoutX="630.0" layoutY="33.0" prefHeight="27.0" prefWidth="93.0" text="Buscar por">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Label>
-               <TextField fx:id="txtBCaja" layoutX="1005.0" layoutY="33.0" onMouseClicked="#buscarCaja" promptText="Buscar" />
+               <TextField fx:id="txtBCaja" layoutX="917.0" layoutY="34.0" onMouseClicked="#buscarCaja" promptText="Buscar" />
                <Button fx:id="btnAgregarCaja" layoutX="65.0" layoutY="444.0" onAction="#AgregarCaja" prefHeight="30.0" prefWidth="125.0" text="Agregar" />
                <Button fx:id="btnModificarCaja" layoutX="370.0" layoutY="444.0" onAction="#ModificarCaja" prefHeight="30.0" prefWidth="125.0" text="Modificar" />
                <Button fx:id="btnEliminarCaja" layoutX="218.0" layoutY="444.0" onAction="#EliminarCaja" prefHeight="30.0" prefWidth="125.0" text="Eliminar" />
-               <ComboBox fx:id="cmbBuscarCaja" layoutX="810.0" layoutY="33.0" prefWidth="150.0" promptText="Select" />
-               <Label fx:id="lblCaja" layoutX="1184.0" layoutY="11.0" prefHeight="70.0" prefWidth="118.0" textFill="#29d57c">
+               <ComboBox fx:id="cmbBuscarCaja" layoutX="737.0" layoutY="33.0" prefWidth="150.0" promptText="Select" />
+               <Label fx:id="lblCaja" layoutX="1089.0" layoutY="11.0" prefHeight="70.0" prefWidth="213.0" textFill="#29d57c">
                   <font>
                      <Font size="48.0" />
                   </font>
                </Label>
                <TableView fx:id="tblDatosCajaPorDia" editable="true" layoutX="604.0" layoutY="427.0" onMouseClicked="#ListaPedidos" prefHeight="255.0" prefWidth="723.0">
                   <columns>
-                     <TableColumn fx:id="tcPedidoID11" editable="false" prefWidth="42.0" resizable="false" text="N°" />
-                     <TableColumn fx:id="tcPedidoDni11" editable="false" prefWidth="96.0" text="dia" />
-                     <TableColumn fx:id="tcPedidoNombres11" editable="false" prefWidth="193.0" resizable="false" text="Monto total" />
-                     <TableColumn fx:id="tcPedidosApellido11" editable="false" prefWidth="353.0" resizable="false" text="fecha" />
+                     <TableColumn fx:id="tcPedidoIDCajaDia" editable="false" prefWidth="42.0" resizable="false" text="N°" />
+                     <TableColumn fx:id="tcPedidodiaCaja" editable="false" prefWidth="96.0" text="dia" />
+                     <TableColumn fx:id="tcPedidoMontoTotalCaja" editable="false" prefWidth="193.0" resizable="false" text="Monto total" />
+                     <TableColumn fx:id="tcFechaCajaPorDia" editable="false" prefWidth="353.0" resizable="false" text="fecha" />
                   </columns>
                   <columnResizePolicy>
                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
