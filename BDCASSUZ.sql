@@ -366,6 +366,16 @@ where idpedido=@idpedido
 
 end
 
+alter procedure SP_U_PEDIDOESTADO(
+@idpedido varchar(20),
+@estadopedido varchar(20))
+as
+begin
+
+	update tblpedido set estadopedido=@estadopedido where idpedido=@idpedido
+
+end
+
 /*Eliminar Pedido Store Procedure*/
 create procedure SP_D_PEDIDO(@idpedido int)
 as
@@ -391,8 +401,8 @@ alter procedure SP_C_CAJA(
 @fecha date)
 as
 begin
-	
-	insert into tblcaja(descripcion,monto,hora,fecha) values(@descripcion,@monto,@hora,@fecha)
+
+	insert into tblcaja(descripcion,monto,hora,fecha) values(@descripcion,@monto,convert(varchar,@hora,108),@fecha)
 
 end
 
@@ -403,7 +413,6 @@ as
 begin
 	select idcaja,descripcion,monto,convert(varchar,fecha,106) as fecha
 	,convert(varchar,hora,108) as hora  from tblcaja order by idcaja asc
-
 end
 
 
@@ -412,7 +421,13 @@ end
 
 exec SP_C_CAJA 'ADSD',-200,'10:50','2021-10-02'
 
-
+select
 EXEC SP_R_CAJA
 
 EXEC SP_R_PEDIDO
+
+select * from tblcaja
+
+select DATENAME(MONTH,DATEADD(MONTH,MONTH(fecha)-1,'1900-01-01'))
+from tblpedido
+

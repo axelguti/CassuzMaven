@@ -11,6 +11,18 @@ public class CatalogoDTO {
     private String estado;
     private JFXToggleButton buton;
 
+    public CatalogoDTO(int id, String nombre, String representante, String telefono, JFXToggleButton buton) {
+        this.id = id;
+        this.nombre = nombre;
+        this.representante = representante;
+        this.telefono = telefono;
+        this.estado = estado;
+        this.buton = buton;
+    }
+
+    public CatalogoDTO(){
+
+    }
 
     public String getEstado() {
         return estado;
@@ -53,19 +65,9 @@ public class CatalogoDTO {
     }
 
     public JFXToggleButton getButon() {
-        buton=new JFXToggleButton();
-        return validarToogleButton(buton);
-    }
-
-    public JFXToggleButton validarToogleButton(JFXToggleButton buton){
-        if(getEstado().equalsIgnoreCase("Habilitado")){
-            buton.setSelected(true);
-        }else if(getEstado().equalsIgnoreCase("Deshabilitado")){
-            buton.setSelected(false);
-        }
-
         return buton;
     }
+
 
     public void setButon(JFXToggleButton buton) {
         this.buton = buton;

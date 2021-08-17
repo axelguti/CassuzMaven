@@ -1,5 +1,7 @@
 package com.DTO;
 
+import javafx.collections.ObservableList;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -10,6 +12,8 @@ public class CajaDTO {
     private double monto;
     private String fecha;
     private String hora;
+
+
 
     public int getIdcaja() {
         return idcaja;

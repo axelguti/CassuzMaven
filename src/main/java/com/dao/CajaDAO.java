@@ -5,8 +5,6 @@ import com.conexion.Conexion;
 import com.interfaces.CajaInterface;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,12 +35,40 @@ public class CajaDAO implements CajaInterface {
 
     @Override
     public String modificar(CajaDTO cajaDTO) {
-        return null;
+        String result = "";
+        try{
+            cn=Conexion.getConexion();
+            stn= Objects.requireNonNull(cn).prepareCall("exec SP_U_CAJA ?,?,?");
+            stn.setInt(1,cajaDTO.getIdcaja());
+            stn.setString(2,cajaDTO.getDescripcion());
+            stn.setDouble(3,cajaDTO.getMonto());
+            stn.executeUpdate();
+            result="Registro Modificado";
+            stn.close();
+            cn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override
     public String eliminar(Object id) {
-        return null;
+        String result = "";
+        try{
+            cn=Conexion.getConexion();
+            stn= Objects.requireNonNull(cn).prepareCall("exec SP_D_CAJA ?");
+            stn.setString(1,id.toString());
+            stn.executeUpdate();
+            result="Registro Eliminado";
+            stn.close();
+            cn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override
@@ -66,5 +92,48 @@ public class CajaDAO implements CajaInterface {
             throwables.printStackTrace();
         }
         return listar;
+    }
+
+    @Override
+    public List<CajaDTO> listacaja() {
+        List<CajaDTO> lista=new ArrayList<>();
+        try{
+            cn=Conexion.getConexion();
+            stn= Objects.requireNonNull(cn).prepareCall("exec SP_R_CAJAFECHA");
+            ResultSet rs=stn.executeQuery();
+            CajaDTO obj;
+            while (rs.next()){
+                obj=new CajaDTO();
+                obj.setIdcaja(rs.getInt("idcaja"));
+                obj.setDescripcion(rs.getString("descripcion"));
+                obj.setMonto(rs.getDouble("monto"));
+                obj.setFecha(rs.getString("fecha"));
+                obj.setHora(rs.getString("hora"));
+                lista.add(obj);
+            }
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lista;
+    }
+
+    @Override
+    public List<CajaDTO> litacajaMontoTotal() {
+        List<CajaDTO> lista=new ArrayList<>();
+        try{
+            cn=Conexion.getConexion();
+            stn= Objects.requireNonNull(cn).prepareCall("exec SP_R_CAJAFECHATOTAL");
+            ResultSet rs=stn.executeQuery();
+            CajaDTO obj;
+            while (rs.next()){
+                obj=new CajaDTO();
+                obj.setFecha(rs.getString("fecha"));
+                obj.setMonto(rs.getDouble("suma"));
+                lista.add(obj);
+            }
+        }catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return lista;
     }
 }

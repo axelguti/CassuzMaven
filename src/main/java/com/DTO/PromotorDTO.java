@@ -18,6 +18,12 @@ public class PromotorDTO {
 
     }
 
+    public PromotorDTO(String dni, String nombre, String apellido) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+    }
+
     public PromotorDTO(String dni, String nombre, String apellido, String direccion, String telefono, LocalDate fechaInscripcion
             , String recomendado, LocalDate fechaNacimiento) {
         this.dni=dni;

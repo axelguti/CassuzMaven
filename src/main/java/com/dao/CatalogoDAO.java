@@ -89,7 +89,7 @@ public class CatalogoDAO implements CatalogoInterface {
         List<CatalogoDTO> lista=new ArrayList<CatalogoDTO>();
         try{
             cn=Conexion.getConexion();
-            stmt=cn.prepareCall("exec SP_R_CATALOGO");
+            stmt= Objects.requireNonNull(cn).prepareCall("exec SP_R_CATALOGO");
             ResultSet rs=stmt.executeQuery();
             CatalogoDTO obj;
             while(rs.next()){
@@ -107,4 +107,22 @@ public class CatalogoDAO implements CatalogoInterface {
         return lista;
     }
 
+    @Override
+    public List<CatalogoDTO> listarCatalogos() {
+        List<CatalogoDTO> listar=new ArrayList<>();
+        try{
+            cn=Conexion.getConexion();
+            stmt= Objects.requireNonNull(cn).prepareCall("EXEC SP_R_NOMBRECATALOGO");
+            ResultSet rs=stmt.executeQuery();
+            CatalogoDTO obj;
+            while(rs.next()){
+                obj=new CatalogoDTO();
+                obj.setNombre(rs.getString("nomcatalogo"));
+                listar.add(obj);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return listar;
+    }
 }

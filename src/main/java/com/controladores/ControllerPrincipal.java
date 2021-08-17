@@ -3,11 +3,12 @@ package com.controladores;
 
 import com.DAOFactory.DAOFactory;
 import com.DTO.*;
+import com.Util.Constantes;
 import com.Util.Estado;
 import com.beans.IconTest;
+import com.dao.PedidoDAO;
 import com.interfaces.*;
 import com.jfoenix.controls.JFXToggleButton;
-import com.sun.javafx.collections.MappingChange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -15,31 +16,50 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
+import javafx.scene.Group;
+import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ControllerPrincipal extends Component implements Initializable {
+
+    @FXML
+    private CategoryAxis bcXMes;
+    @FXML
+    private NumberAxis bcYMonto;
+    @FXML
+    private BarChart<String,Double> bcReporteBar;
+    @FXML
+    private PieChart pcReporteGananciaMes;
+    @FXML
+    private TableColumn<CajaDTO,String> tcMontoTotalCaja;
+    private  ComboBox<String> cmbestadopedido;
     @FXML
     private TableColumn<CajaDTO,String> tcFechaCajaDelDia;
     @FXML
@@ -97,7 +117,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private TableColumn<PedidosDTO, String> tcFechaEstadoPedido;
     @FXML
-    private TableColumn<PedidosDTO, Button> tcPedidosEstado;
+    private TableColumn<PedidosDTO, String> tcPedidosEstado;
     @FXML
     private TableView<PedidosDTO> tblDatosEstado;
     @FXML
@@ -288,6 +308,8 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private ObservableList<String> listaEstado;
     @FXML
+    private ObservableList<String> estadoPedidos;
+    @FXML
     private ObservableList<String> listaBuscarUsuario;
     @FXML
     private ObservableList<String> listaBuscarPedidos;
@@ -311,6 +333,9 @@ public class ControllerPrincipal extends Component implements Initializable {
     private final CajaInterface caja=DAOFactory.getCajaDAO();
     @FXML
     private FileChooser filechooser;
+    @FXML
+    private ComboBox<String> estadoPedido;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -328,38 +353,40 @@ public class ControllerPrincipal extends Component implements Initializable {
         listaEstado();
         mostrarCaja();
         sumaTotalCaja();
-        List<CajaDTO> listar=caja.listar();
-        Map<String,Double> cajasuma=new HashMap<String,Double>();
-        cajasuma=listar.stream().collect(Collectors.groupingBy(CajaDTO::getFecha,Collectors.summingDouble(CajaDTO::getMonto)));
+        loaddata();
+        modificarEstadoPedido();
+        sumatotalCajaPorDia();
+        createPieChart();
+        createBarChart();
+        validarToggleButton();
+    }
 
-        cajasuma.forEach((fecha,suma)->{
-            System.out.println(fecha+" "+suma);
-        });
+    private String calcularFormatoFecha(){
         LocalDateTime hora=LocalDateTime.now();
+        Month mes=hora.getMonth();
+        String fech=String.valueOf(mes);
+        String fech2=fech.substring(0,3);
 
-        switch(LocalDateTime.now().getMonth()){
-
-        }
-        String fech=hora.format(DateTimeFormatter.ofPattern("dd MM yyyy"));
-        Predicate<CajaDTO> pred=a->a.getFecha().equalsIgnoreCase(fech);
-
-        double cajasumas;
-        cajasumas=listar.stream().filter(pred).mapToDouble(CajaDTO::getMonto).sum();
-        System.out.println(cajasumas);
-        System.out.println(LocalDateTime.now());
-
+        return String.format("%d %s %d", LocalDateTime.now().getDayOfMonth(), fech2, LocalDateTime.now().getYear());
     }
 
     private void sumaTotalCaja(){
         List<CajaDTO> listar=caja.listar();
-        Predicate<CajaDTO> pred=a-> {
-            LocalDateTime.now();
-            return true;
-        };
 
-        double cajasuma;
-        cajasuma=listar.stream().filter(pred).mapToDouble(CajaDTO::getMonto).sum();
-        lblCaja.setText(String.valueOf(cajasuma));
+        String fecha=calcularFormatoFecha();
+        Predicate<CajaDTO> pred=a->a.getFecha().equalsIgnoreCase(fecha);
+        double sumacaja;
+        sumacaja=listar.stream().filter(pred).mapToDouble(CajaDTO::getMonto).sum();
+        lblCaja.setText(String.valueOf(sumacaja));
+    }
+
+    private void sumatotalCajaPorDia(){
+        List<CajaDTO> listar=caja.litacajaMontoTotal();
+        listaCajaDTO=FXCollections.observableArrayList();
+        tcFechaCajaPorDia.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        tcMontoTotalCaja.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        listar.forEach(a->listaCajaDTO.addAll(a));
+        tblDatosCajaPorDia.setItems(listaCajaDTO);
     }
 
     private void mostrarlistaEstado(){
@@ -377,9 +404,60 @@ public class ControllerPrincipal extends Component implements Initializable {
         tcFechaEstadoPedido.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
         tcTipoPago.setCellValueFactory(new PropertyValueFactory<>("tipopago"));
         tcBanco.setCellValueFactory(new PropertyValueFactory<>("banco"));
+        tcPedidosEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         listar.forEach(a -> listaPedidos.addAll(a));
         tblDatosEstado.setItems(listaPedidos);
+        loaddata();
     }
+
+    private void modificarEstadoPedido(){
+        List<PedidosDTO> list=pedido.listar();
+        for (PedidosDTO p:list) {
+            cmbestadopedido.setOnAction(e -> {
+                p.setEs(cmbestadopedido.getValue());
+                p.setIdPedido(p.getIdPedido());
+                pedido.modificarEstado(p);
+            });
+        }
+    }
+
+    private void validarToggleButton(){
+        ObservableList<CatalogoDTO> datos=FXCollections.observableArrayList();
+        List<CatalogoDTO> listar=daoCatalogo.listar();
+        for(CatalogoDTO c:listar){
+            estado=new JFXToggleButton();
+            datos.addAll(new CatalogoDTO(c.getId(),c.getNombre(),c.getRepresentante(),
+                    c.getTelefono(),estado));
+            if(c.getEstado().equalsIgnoreCase(String.valueOf(Estado.HABILITADO))){
+                estado.setSelected(true);
+            }else{
+                estado.setSelected(false);
+            }
+        }
+        tblDatosCatalogo.setItems(datos);
+    }
+
+    private void loaddata(){
+        ObservableList<PedidosDTO> datos=FXCollections.observableArrayList();
+        estadoPedidos=FXCollections.observableArrayList("Proceso","En Almacen","Entregado");
+        List<PedidosDTO> listar=pedido.listar();
+        for(PedidosDTO p:listar){
+            cmbestadopedido=new ComboBox<>(estadoPedidos);
+            datos.addAll(new PedidosDTO(p.getDni(),p.getNombre(),p.getApellido(),p.getIdPedido(),p.getFechaPedido(),p.getNomCatalogo(),
+                    p.getPagina(),p.getMarca(),p.getColor(),p.getPrecio(),p.getTalla(),p.getCodProducto(),p.getTipopago(),p.getBanco(),cmbestadopedido));
+            if(p.getEs().equals("Proceso")){
+                cmbestadopedido.getSelectionModel().select("Proceso");
+            }else if(p.getEs().equals("En Almacen")){
+                cmbestadopedido.getSelectionModel().select("En Almacen");
+            }else if(p.getEs().equals("Entregado")){
+                cmbestadopedido.getSelectionModel().select("Entregado");
+            }
+        }
+        tblDatosEstado.setItems(datos);
+    }
+
+
+
 
     //Lista de roles
     private void listaRol() {
@@ -393,7 +471,6 @@ public class ControllerPrincipal extends Component implements Initializable {
         listaEstado=FXCollections.observableArrayList("DNI","Catalogo","Fecha");
         cmbBuscarEstadoPedido.setItems(listaEstado);
     }
-
     private void listaTipoPago(){
         tipopago=FXCollections.observableArrayList("Transferencia","Efectivo");
         cmbTipoPago.setItems(tipopago);
@@ -892,7 +969,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     //Muestra los catalogos en el combobox
     @FXML
     private void cmbmuestracata(MouseEvent mouseEvent) {
-        List<CatalogoDTO> listar = daoCatalogo.listar();
+        List<CatalogoDTO> listar = daoCatalogo.listarCatalogos();
         cmbcata = FXCollections.observableArrayList();
         listar.forEach(a -> cmbcata.addAll(a.getNombre()));
         cmbCatalogosP.setItems(cmbcata);
@@ -924,28 +1001,28 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     private void mostrarPedidos() {
         List<PedidosDTO> listar = pedido.listar();
-            listaPedidos = FXCollections.observableArrayList();
-            tcPedidoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
-            tcPedidoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
-            tcPedidoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-            tcPedidosApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
-            tcPedidosCatalogo.setCellValueFactory(new PropertyValueFactory<>("nomCatalogo"));
-            tcPedidoPagina.setCellValueFactory(new PropertyValueFactory<>("pagina"));
-            tcPedidosCodigo.setCellValueFactory(new PropertyValueFactory<>("codProducto"));
-            tcPedidosMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
-            tcPedidosColor.setCellValueFactory(new PropertyValueFactory<>("color"));
-            tcPedidosTalla.setCellValueFactory(new PropertyValueFactory<>("talla"));
-            tcPedidosPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-            tcFechaPedido.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
-            listar.forEach(a -> listaPedidos.addAll(a));
-            tblDatosPedidos.setItems(listaPedidos);
+        listaPedidos = FXCollections.observableArrayList();
+        tcPedidoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
+        tcPedidoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        tcPedidoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        tcPedidosApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
+        tcPedidosCatalogo.setCellValueFactory(new PropertyValueFactory<>("nomCatalogo"));
+        tcPedidoPagina.setCellValueFactory(new PropertyValueFactory<>("pagina"));
+        tcPedidosCodigo.setCellValueFactory(new PropertyValueFactory<>("codProducto"));
+        tcPedidosMarca.setCellValueFactory(new PropertyValueFactory<>("marca"));
+        tcPedidosColor.setCellValueFactory(new PropertyValueFactory<>("color"));
+        tcPedidosTalla.setCellValueFactory(new PropertyValueFactory<>("talla"));
+        tcPedidosPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        tcFechaPedido.setCellValueFactory(new PropertyValueFactory<>("fechaPedido"));
+        listar.forEach(a -> listaPedidos.addAll(a));
+        tblDatosPedidos.setItems(listaPedidos);
     }
-
     @FXML
     private void RegistrarPedidos(ActionEvent actionEvent) {
         String result="";
         try {
             PedidosDTO pedidos=datosPedido();
+            pedidos.setEs("Proceso");
             if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
                 txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
                 cmbPromotorPedido.getEditor().getText().isEmpty() || cmbCatalogosP.getEditor().getText().isEmpty()){
@@ -960,9 +1037,13 @@ public class ControllerPrincipal extends Component implements Initializable {
             txtPPagina.setText("");
         }
         mostrarPedidos();
+        createBarChart();
+        createPieChart();
     }
 
+
     private PedidosDTO datosPedido(){
+
         PedidosDTO pedidos=new PedidosDTO();
         pedidos.setDni(cmbPromotorPedido.getValue());
         pedidos.setNombre(txtNombrePromotorPedido.getText());
@@ -1002,8 +1083,10 @@ public class ControllerPrincipal extends Component implements Initializable {
             JOptionPane.showMessageDialog(null, "Error. La pagina no puede ir letras", "Error", 1);
             txtPPagina.setText("");
         }
+        createPieChart();
         mostrarPedidos();
         limpiarpedidos();
+        createBarChart();
     }
 
     @FXML
@@ -1158,24 +1241,24 @@ public class ControllerPrincipal extends Component implements Initializable {
             String result=caja.grabar(datos);
             JOptionPane.showMessageDialog(null,result,"Registrar",1);
         }
+        sumatotalCajaPorDia();
         mostrarCaja();
         sumaTotalCaja();
     }
 
-    private void conteocaja(){
-
-    }
 
     private void mostrarCaja(){
-        List<CajaDTO> listar = caja.listar();
+        List<CajaDTO> listar = caja.listacaja();
         listaCajaDTO = FXCollections.observableArrayList();
         tcPedidoIDCaja.setCellValueFactory(new PropertyValueFactory<>("idcaja"));
         tcPedidoDescripcionCaja.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         tcPedidoMontoCaja.setCellValueFactory(new PropertyValueFactory<>("monto"));
         tcPedidosHoraCaja.setCellValueFactory(new PropertyValueFactory<>("hora"));
         tcFechaCajaDelDia.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        listar.forEach(a -> listaCajaDTO.addAll(a));
+
+        listaCajaDTO.addAll(listar);
         tblDatosCajaDelDia.setItems(listaCajaDTO);
+
     }
 
     private CajaDTO registrarCaja(){
@@ -1190,14 +1273,38 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     @FXML
     private void ModificarCaja(ActionEvent actionEvent) {
+        CajaDTO datos=registrarCaja();
+        datos.setIdcaja(Integer.parseInt(lblCajaID.getText()));
+        if(txtMontoCaja.getText().isEmpty()){
+            Error();
+        }else{
+            JOptionPane.showMessageDialog(null,caja.modificar(datos));
+        }
+        sumatotalCajaPorDia();
+        mostrarCaja();
+        limpiarcaja();
     }
 
     @FXML
     private void EliminarCaja(ActionEvent actionEvent) {
+        String id=lblCajaID.getText();
+        int i = JOptionPane.showOptionDialog(null, "Seguro que desea Eliminar el registro", "Eliminar",
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.ICON_PROPERTY);
+        if (i == 0) {
+            JOptionPane.showMessageDialog(null,caja.eliminar(id),"Eliminar",1);
+        }
+        sumatotalCajaPorDia();
+        mostrarCaja();
+        limpiarcaja();
     }
 
+    private void limpiarcaja(){
+        taDescripcion.setText("");
+        txtMontoCaja.setText("");
+    }
     @FXML
     private void LimpiarCaja(ActionEvent actionEvent) {
+        limpiarcaja();
     }
 
     @FXML
@@ -1226,8 +1333,8 @@ public class ControllerPrincipal extends Component implements Initializable {
                         }
                     }
                 } else {
-                    //Muestra la lista de usuarios
-                    mostrarUsuario();
+
+                    mostrarlistaEstado();
                 }
                 return false;
             });
@@ -1235,6 +1342,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         SortedList<PedidosDTO> sorted = new SortedList<>(filtrar);
         sorted.comparatorProperty().bind(tblDatosEstado.comparatorProperty());
         tblDatosEstado.setItems(sorted);
+        mostrarlistaEstado();
     }
 
 
@@ -1243,10 +1351,10 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void tipoPagos(ActionEvent actionEvent) {
         listaTipoPago();
         if(cmbTipoPago.getValue().equals("Transferencia")){
-            txtBancoPromotor.setDisable(true);
+            txtBancoPromotor.setDisable(false);
 
         }else if(cmbTipoPago.getValue().equals("Efectivo")){
-            txtBancoPromotor.setDisable(false);
+            txtBancoPromotor.setDisable(true);
         }
     }
 
@@ -1260,5 +1368,53 @@ public class ControllerPrincipal extends Component implements Initializable {
             taDescripcion.setText(mostrar.getDescripcion());
             txtMontoCaja.setText(String.valueOf(mostrar.getMonto()));
         }
+    }
+
+    public void mostrarPedidosEstado(ActionEvent actionEvent) {
+        mostrarlistaEstado();
+    }
+    private void createPieChart(){
+        List<PedidosDTO> listar=pedido.reporteCircular();
+        ObservableList<PieChart.Data> piedata = null;
+        PieChart.Data pie;
+
+        piedata=FXCollections.observableArrayList();
+        pcReporteGananciaMes.setData(piedata);
+        pcReporteGananciaMes.setLegendSide(Side.LEFT);
+        pcReporteGananciaMes.setTitleSide(Side.TOP);
+        for(PedidosDTO p:listar){
+            pie=new PieChart.Data(p.getNomCatalogo(),p.getPrecio());
+            pie.setName(String.valueOf(p.getPrecio()));
+            pie.nameProperty().set(p.getNomCatalogo());
+            piedata=FXCollections.observableArrayList(pie);
+            installTooltip(pie);
+            pcReporteGananciaMes.getData().addAll(piedata);
+            System.out.println(p.getNomCatalogo()+" precio: "+p.getPrecio());
+        }
+
+        //creatae piechart and pie data
+
+    }
+    
+    private void installTooltip(PieChart.Data pie){
+        String msg=String.format("%s:%s",pie.getName(),pie.getPieValue());
+        Tooltip tt=new Tooltip(msg);
+        tt.setStyle("-fx-background-color: gray;-fx-text-fill:whitesmoke;");
+        Tooltip.install(pie.getNode(),tt);
+    }
+
+    private void createBarChart() {
+
+        List<PedidosDTO> listar=pedido.reportePedido();
+        XYChart.Series<String,Double> chart=new XYChart.Series<>();
+        chart.getData().add(new XYChart.Data<String,Double>("",0.0));
+        
+        for(PedidosDTO p:listar){
+            chart.setName(String.valueOf(p.getPrecio()));
+            chart.nameProperty().set(String.valueOf(p.getPrecio()));
+            chart.getData().add(new XYChart.Data<>(p.getMes(),p.getPrecio()));
+            bcReporteBar.getData().add(chart);
+        }
+
     }
 }

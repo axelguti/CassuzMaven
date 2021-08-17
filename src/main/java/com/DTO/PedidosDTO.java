@@ -1,5 +1,6 @@
 package com.DTO;
 
+import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 
 import java.time.LocalDate;
@@ -17,14 +18,58 @@ public class PedidosDTO extends PromotorDTO{
     private String tipopago;
     private String banco;
     private ComboBox<String> estado;
+    private String es;
+    private String mes;
+
+
+    public PedidosDTO(){}
+
+    public PedidosDTO(String dni, String nombre, String apellido, int idPedido, LocalDate fechaPedido, String nomCatalogo,
+                      int pagina, String marca, String color, double precio, String talla, String codProducto, String tipopago, String banco, ComboBox<String> estado) {
+        super(dni, nombre, apellido);
+        this.idPedido = idPedido;
+        this.fechaPedido = fechaPedido;
+        this.nomCatalogo = nomCatalogo;
+        this.pagina = pagina;
+        this.marca = marca;
+        this.color = color;
+        this.precio = precio;
+        this.talla = talla;
+        this.codProducto = codProducto;
+        this.tipopago = tipopago;
+        this.banco = banco;
+        this.estado = estado;
+    }
+
+    public String getMes() {
+        return mes;
+    }
+
+    public PedidosDTO setMes(String mes) {
+        this.mes = mes;
+        return this;
+    }
+
+    public PedidosDTO(String es){
+        this.es=es;
+    }
+    public void setEstado(ComboBox<String> estado) {
+        this.estado = estado;
+
+    }
+
+    public String getEs() {
+        return es;
+    }
+
+    public void setEs(String es) {
+        this.es = es;
+    }
 
     public ComboBox<String> getEstado() {
         return estado;
     }
 
-    public void setEstado(ComboBox<String> estado) {
-        this.estado = estado;
-    }
 
     public String getTipopago() {
         return tipopago;

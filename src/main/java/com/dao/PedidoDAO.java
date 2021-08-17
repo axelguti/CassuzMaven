@@ -24,7 +24,7 @@ public class PedidoDAO implements PedidoInterface {
 
         try{
             cn= Conexion.getConexion();
-            stm = Objects.requireNonNull(cn).prepareCall("EXEC SP_C_PEDIDO ?,?,?,?,?,?,?,?,?,?,?");
+            stm = Objects.requireNonNull(cn).prepareCall("EXEC SP_C_PEDIDO ?,?,?,?,?,?,?,?,?,?,?,?");
             stm.setString(1, pedidosDTO.getDni());
             stm.setString(2, pedidosDTO.getNomCatalogo());
             stm.setInt(3, pedidosDTO.getPagina());
@@ -36,6 +36,7 @@ public class PedidoDAO implements PedidoInterface {
             stm.setString(9,pedidosDTO.getTipopago());
             stm.setString(10,pedidosDTO.getBanco());
             stm.setString(11, pedidosDTO.getFechaPedido().toString());
+            stm.setString(12,pedidosDTO.getEs());
             stm.executeUpdate();
             result="Pedido Registrado Exitosamente";
             stm.close();
@@ -117,7 +118,67 @@ public class PedidoDAO implements PedidoInterface {
                 p.setTipopago(rs.getString("tipopago"));
                 p.setBanco(rs.getString("banco"));
                 p.setFechaPedido(LocalDate.parse(rs.getString("fechapedido")));
+                p.setEs(rs.getString("estadopedido"));
                 listar.add(p);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return listar;
+    }
+
+    @Override
+    public String modificarEstado(PedidosDTO p) {
+        String result ="";
+
+        try {
+            cn=Conexion.getConexion();
+            stm= Objects.requireNonNull(cn).prepareCall("exec SP_U_PEDIDOESTADO ?,?");
+            stm.setInt(1, p.getIdPedido());
+            stm.setString(2,p.getEs());
+            stm.executeUpdate();
+            result="Modificado Satisfactoriamente";
+            stm.close();
+            cn.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public List<PedidosDTO> reportePedido() {
+        List<PedidosDTO> listar=new ArrayList<>();
+        try{
+            cn=Conexion.getConexion();
+            stm= Objects.requireNonNull(cn).prepareCall("EXEC SP_R_REPORTEMES");
+            ResultSet rs=stm.executeQuery();
+            PedidosDTO obj;
+            while(rs.next()){
+                obj=new PedidosDTO();
+                obj.setMes(rs.getString("mes"));
+                obj.setPrecio(rs.getDouble("total"));
+                listar.add(obj);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return listar;
+    }
+
+    @Override
+    public List<PedidosDTO> reporteCircular() {
+        List<PedidosDTO> listar=new ArrayList<>();
+        try{
+            cn=Conexion.getConexion();
+            stm= Objects.requireNonNull(cn).prepareCall("exec SP_R_REPORTECIRCULARCATALOGO");
+            ResultSet rs=stm.executeQuery();
+            PedidosDTO obj;
+            while(rs.next()){
+                obj=new PedidosDTO();
+                obj.setNomCatalogo(rs.getString(1));
+                obj.setPrecio(rs.getDouble(2));
+                listar.add(obj);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
