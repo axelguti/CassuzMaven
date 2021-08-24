@@ -428,6 +428,27 @@ EXEC SP_R_PEDIDO
 
 select * from tblcaja
 
-select DATENAME(MONTH,DATEADD(MONTH,MONTH(fecha)-1,'1900-01-01'))
-from tblpedido
+alter procedure SP_R_REPORTECIRCULARCATALOGO
+as
+begin
 
+select tblcatalogo.nomcatalogo,SUM(precioproducto)as total,DATENAME(MONTH,DATEADD(MONTH,MONTH(fechapedido)-1,'1900-01-01')) as mes ,YEAR(fechapedido)as año from tblpedido inner join tblcatalogo on tblcatalogo.idcatalogo=tblpedido.idcatalogo
+group by tblcatalogo.nomcatalogo,MONTH(fechapedido),YEAR(fechapedido)
+
+end
+select * from tblcatalogo
+select * from tblpedido
+
+delete from tblpedido 
+
+create procedure SP_R_NOMBRECATALOGO
+AS
+BEGIN
+
+SELECT nomcatalogo from tblcatalogo WHERE estadocatalogo='HABILITADO'
+
+END;
+
+EXEC SP_R_NOMBRECATALOGO
+
+EXEC SP_R_REPORTECIRCULARCATALOGO

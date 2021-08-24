@@ -487,7 +487,7 @@
                   </BarChart>
                </children>
             </Pane>
-            <PieChart fx:id="pcReporteGananciaMes" layoutX="721.0" layoutY="140.0" />
+            <PieChart fx:id="pcReporteGananciaMes" layoutX="683.0" layoutY="39.0" prefHeight="517.0" prefWidth="574.0" />
          </AnchorPane>
       </Tab>
    </TabPane>

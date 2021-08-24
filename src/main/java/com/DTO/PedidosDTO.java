@@ -25,7 +25,7 @@ public class PedidosDTO extends PromotorDTO{
     public PedidosDTO(){}
 
     public PedidosDTO(String dni, String nombre, String apellido, int idPedido, LocalDate fechaPedido, String nomCatalogo,
-                      int pagina, String marca, String color, double precio, String talla, String codProducto, String tipopago, String banco, ComboBox<String> estado) {
+                      int pagina, String marca, String color, double precio, String talla, String codProducto, String tipopago, String banco) {
         super(dni, nombre, apellido);
         this.idPedido = idPedido;
         this.fechaPedido = fechaPedido;
@@ -38,7 +38,7 @@ public class PedidosDTO extends PromotorDTO{
         this.codProducto = codProducto;
         this.tipopago = tipopago;
         this.banco = banco;
-        this.estado = estado;
+
     }
 
     public String getMes() {
@@ -160,4 +160,10 @@ public class PedidosDTO extends PromotorDTO{
     public void setCodProducto(String codProducto) {
         this.codProducto = codProducto;
     }
+
+    public void imprimir(){
+        System.out.println(getEs());
+    }
+
+
 }

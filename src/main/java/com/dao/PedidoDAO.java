@@ -3,6 +3,8 @@ package com.dao;
 import com.DTO.PedidosDTO;
 import com.conexion.Conexion;
 import com.interfaces.PedidoInterface;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -143,7 +145,7 @@ public class PedidoDAO implements PedidoInterface {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return result;
+        return  result;
     }
 
     @Override
@@ -184,5 +186,25 @@ public class PedidoDAO implements PedidoInterface {
             throwables.printStackTrace();
         }
         return listar;
+    }
+
+    @Override
+    public ObservableList<PedidosDTO> getPedidos() {
+        ObservableList<PedidosDTO> obs= FXCollections.observableArrayList();
+
+        try{
+            cn=Conexion.getConexion();
+            stm= Objects.requireNonNull(cn).prepareCall("exec SP_R_CARGARDATOSCOMBOBOX");
+            ResultSet rs=stm.executeQuery();
+            PedidosDTO obj;
+            while(rs.next()){
+                obj=new PedidosDTO();
+                obj.setEs(rs.getString("estadopedido"));
+                obs.add(obj);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return obs;
     }
 }
