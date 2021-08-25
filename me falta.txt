@@ -1,0 +1,11 @@
+precio de catalogo
+precio de promotor
+margen de contribucion
+
+
+ventas totales por catalogo
+ventas por promotor
+reporte margen de ganancia
+agregar devolucion 
+reporte total excel
+
