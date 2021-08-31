@@ -21,7 +21,7 @@ public class Conexion {
             return null;
         }*/
 
-        String url="jdbc:sqlserver://Axel\\MSSQLSERVER01:1433;" +
+        String url="jdbc:sqlserver://DESKTOP-TT0PJD1\\MSSQLSERVER:1433;" +
                 "database=BDCASSUZ;user=Axl;password=1234;";
         try{
             Connection con=DriverManager.getConnection(url);

@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface PedidoInterface extends EntidadInterface<PedidosDTO> {
     public String modificarEstado(PedidosDTO p);
-    public List<PedidosDTO> reportePedido();
-    public List<PedidosDTO> reporteCircular();
+    public List<PedidosDTO> reporteFecha();
     public ObservableList<PedidosDTO> getPedidos();
+    public List<PedidosDTO> reportePromotor();
+    public List<PedidosDTO> reporteMes();
 }

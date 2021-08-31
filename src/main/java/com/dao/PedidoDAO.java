@@ -149,7 +149,7 @@ public class PedidoDAO implements PedidoInterface {
     }
 
     @Override
-    public List<PedidosDTO> reportePedido() {
+    public List<PedidosDTO> reporteMes() {
         List<PedidosDTO> listar=new ArrayList<>();
         try{
             cn=Conexion.getConexion();
@@ -160,6 +160,7 @@ public class PedidoDAO implements PedidoInterface {
                 obj=new PedidosDTO();
                 obj.setMes(rs.getString("mes"));
                 obj.setPrecio(rs.getDouble("total"));
+                obj.setFecha(rs.getString("año"));
                 listar.add(obj);
             }
         } catch (SQLException throwables) {
@@ -169,17 +170,19 @@ public class PedidoDAO implements PedidoInterface {
     }
 
     @Override
-    public List<PedidosDTO> reporteCircular() {
+    public List<PedidosDTO> reporteFecha() {
         List<PedidosDTO> listar=new ArrayList<>();
         try{
             cn=Conexion.getConexion();
-            stm= Objects.requireNonNull(cn).prepareCall("exec SP_R_REPORTECIRCULARCATALOGO");
+            stm= Objects.requireNonNull(cn).prepareCall("EXEC SP_R_REPORTEFECHA");
             ResultSet rs=stm.executeQuery();
             PedidosDTO obj;
             while(rs.next()){
                 obj=new PedidosDTO();
                 obj.setNomCatalogo(rs.getString(1));
                 obj.setPrecio(rs.getDouble(2));
+                obj.setMes(rs.getString(3));
+                obj.setFecha(rs.getString(4));
                 listar.add(obj);
             }
         } catch (SQLException throwables) {
@@ -207,4 +210,28 @@ public class PedidoDAO implements PedidoInterface {
         }
         return obs;
     }
+
+    @Override
+    public List<PedidosDTO> reportePromotor() {
+        List<PedidosDTO> listar=new ArrayList<>();
+        try {
+            cn=Conexion.getConexion();
+            stm= Objects.requireNonNull(cn).prepareCall("exec SP_R_REPORTEPROMOTOR");
+            ResultSet rs=stm.executeQuery();
+            PedidosDTO obj;
+            while(rs.next()){
+                obj=new PedidosDTO();
+                obj.setDni(rs.getString("dnipromotor"));
+                obj.setNombre(rs.getString("nompromotor"));
+                obj.setApellido(rs.getString("apepromotor"));
+                obj.setPrecio(rs.getDouble("Total"));
+                listar.add(obj);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return listar;
+    }
+
+
 }

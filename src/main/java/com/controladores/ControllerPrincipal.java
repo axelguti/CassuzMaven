@@ -3,6 +3,7 @@ package com.controladores;
 
 import com.DAOFactory.DAOFactory;
 import com.DTO.*;
+import com.Reportes.PromotorGanancia;
 import com.Util.Constantes;
 import com.Util.Estado;
 import com.beans.IconTest;
@@ -32,6 +33,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Callback;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 
 import javax.swing.*;
@@ -78,6 +81,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     private TextField txtMontoCaja;
     @FXML
     private ObservableList<String> espedidos;
+    @FXML
     private Button btnLimpiarCaja;
     @FXML
     private TableView<CajaDTO> tblDatosCajaDelDia;
@@ -143,6 +147,8 @@ public class ControllerPrincipal extends Component implements Initializable {
     private TableColumn<CatalogoDTO,Button> tcEstadoCatalogo;
     @FXML
     private ComboBox<String> cmbBuscarPedido;
+    @FXML
+    private ComboBox<String> cmbReporte;
     @FXML
     private Label lblIdpedido;
     @FXML
@@ -329,11 +335,13 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private final PedidoInterface pedido = DAOFactory.getPedidoDAO();
 
+    private ObservableList<String> cmbfiltrarReportes2;
+
+    private ObservableList<String> cmbfiltrarReportes1;
     private final CajaInterface caja=DAOFactory.getCajaDAO();
     @FXML
     private FileChooser filechooser;
-    @FXML
-    private ComboBox<String> estadoPedido;
+
 
 
     @Override
@@ -354,9 +362,9 @@ public class ControllerPrincipal extends Component implements Initializable {
         sumaTotalCaja();
         loaddata();
         sumatotalCajaPorDia();
-        createPieChart();
         createBarChart();
         validarToggleButton();
+        litadoReportes();
     }
 
     private String calcularFormatoFecha(){
@@ -390,7 +398,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void mostrarlistaEstado(){
         List<PedidosDTO> listar = pedido.listar();
         listaPedidos = FXCollections.observableArrayList();
-        espedidos=FXCollections.observableArrayList("Proceso","En Almacen","Entregado");
+            espedidos=FXCollections.observableArrayList("Proceso","En Almacen","Entregado");
         tcPedidoEstadoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
         tcPedidoEstadoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
         tcPedidoEstadoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -404,53 +412,67 @@ public class ControllerPrincipal extends Component implements Initializable {
         tcTipoPago.setCellValueFactory(new PropertyValueFactory<>("tipopago"));
         tcBanco.setCellValueFactory(new PropertyValueFactory<>("banco"));
         tcPedidosEstado.setCellFactory((col)->{
-                    TableCell<PedidosDTO, String> cell = new TableCell<PedidosDTO, String>(){
-
-                        @Override
-                        public void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            // Texto de visualización del botón
-                            ComboBox<String> cmb=new ComboBox<>(espedidos);
-                            // Establecer el color del botón
-                            cmb.setStyle("-fx-background-color: #00bcff;-fx-text-fill: #ffffff");
-                            // Evento de clic de botón
-                            {
 
 
-                            }
-                            if (empty) {
-                                // Si esta columna está vacía, no se agregará ningún elemento por defecto
-                                setText(null);
-                                setGraphic(null);
-                            } else {
-                                for(PedidosDTO p:listar){
-                                    if(p.getEs().equals("Proceso")){
-                                        cmb.getSelectionModel().select(p.getEs());
-                                    }
-                                    if(p.getEs().equals("En Almacen")){
-                                        cmb.getSelectionModel().select(p.getEs());
-                                    }
-                                    if(p.getEs().equals("Entregado")){
-                                        cmb.getSelectionModel().select(p.getEs());
-                                    }
+            TableCell<PedidosDTO, String> cell = new TableCell<PedidosDTO, String>(){
+                ComboBox<String> cmb=new ComboBox<String>(espedidos);
+
+
+
+
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    // Texto de visualización del botón
+
+
+                    // Establecer el color del botón
+                    cmb.setStyle("-fx-background-color: #00bcff;-fx-text-fill: #ffffff");
+                    // Evento de clic de botón
+                    {
+
+
+                    }
+                    if (empty) {
+                        // Si esta columna está vacía, no se agregará ningún elemento por defecto
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        {
+
+                        }
+                        cmb.setOnAction((col) -> {
+                            // Obtener la posición en la lista y luego obtener los datos de información correspondientes a la lista
+                            PedidosDTO p = listar.get(getIndex());
+                            p.setEs(cmb.getValue());
+                            p.setIdPedido(p.getIdPedido());
+                            pedido.modificarEstado(p);
+                            // Agregar evento de botón por ti mismo
+                        });
+                        for (PedidosDTO p:listar){
+                            switch (p.getEs()){
+                                case "Proceso":{
+                                    cmb.getSelectionModel().select("Proceso");
+                                }break;
+                                case "En Almacen":{
+                                    cmb.getSelectionModel().select("En Almacen");
+                                }break;
+                                case "Entregado":{
+                                    cmb.getSelectionModel().select("Entregado");
                                 }
-                                cmb.setOnAction((col) -> {
-                                    // Obtener la posición en la lista y luego obtener los datos de información correspondientes a la lista
-                                    PedidosDTO p = listar.get(getIndex());
-                                    p.setEs(cmb.getValue());
-                                    p.setIdPedido(p.getIdPedido());
-                                    pedido.modificarEstado(p);
-                                    // Agregar evento de botón por ti mismo
-                                });
-                                // Botón de carga
-                                this.setGraphic(cmb);
                             }
                         }
-                    };
-                    return cell;
-                });
 
-                tblDatosEstado.setItems(listaPedidos);
+
+                        // Botón de carga
+                        this.setGraphic(cmb);
+                    }
+                }
+            };
+            return cell;
+        });
+
+        tblDatosEstado.setItems(listaPedidos);
         loaddata();
     }
 
@@ -478,6 +500,8 @@ public class ControllerPrincipal extends Component implements Initializable {
             datos.addAll(new PedidosDTO(p.getDni(),p.getNombre(),p.getApellido(),p.getIdPedido(),p.getFechaPedido(),p.getNomCatalogo(),
                     p.getPagina(),p.getMarca(),p.getColor(),p.getPrecio(),p.getTalla(),p.getCodProducto(),p.getTipopago(),p.getBanco()));
         }
+
+
         tblDatosEstado.setItems(datos);
     }
 
@@ -1049,8 +1073,8 @@ public class ControllerPrincipal extends Component implements Initializable {
             PedidosDTO pedidos=datosPedido();
             pedidos.setEs("Proceso");
             if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
-                txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
-                cmbPromotorPedido.getEditor().getText().isEmpty() || cmbCatalogosP.getEditor().getText().isEmpty()){
+                    txtPPrecio.getText().isEmpty() || txtPTalla.getText().isEmpty() ||
+                    cmbPromotorPedido.getEditor().getText().isEmpty() || cmbCatalogosP.getEditor().getText().isEmpty()){
                 Error();
             }else{
                 result=pedido.grabar(pedidos);
@@ -1064,7 +1088,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         mostrarlistaEstado();
         mostrarPedidos();
         createBarChart();
-        createPieChart();
+
     }
 
 
@@ -1092,7 +1116,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         String result;
         try {
             //Icon icono=new ImageIcon(getClass().getResource("../img/alerta.png"));
-                IconTest icon=new IconTest();
+            IconTest icon=new IconTest();
             PedidosDTO pedidos=datosPedido();
             pedidos.setIdPedido(Integer.parseInt(lblIdpedido.getText()));
             if(txtPPagina.getText().isEmpty() || txtPCodigo.getText().isEmpty() || txtPColor.getText().isEmpty() ||
@@ -1109,7 +1133,6 @@ public class ControllerPrincipal extends Component implements Initializable {
             JOptionPane.showMessageDialog(null, "Error. La pagina no puede ir letras", "Error", 1);
             txtPPagina.setText("");
         }
-        createPieChart();
         mostrarPedidos();
         limpiarpedidos();
         createBarChart();
@@ -1399,35 +1422,54 @@ public class ControllerPrincipal extends Component implements Initializable {
     public void mostrarPedidosEstado(ActionEvent actionEvent) {
         mostrarlistaEstado();
     }
-    private void createPieChart(){
-        List<PedidosDTO> listar=pedido.reporteCircular();
-        ObservableList<PieChart.Data> piedata = null;
-        PieChart.Data pie;
 
-        piedata=FXCollections.observableArrayList();
-        pcReporteGananciaMes.setData(piedata);
-        pcReporteGananciaMes.setLegendSide(Side.LEFT);
-        pcReporteGananciaMes.setTitleSide(Side.TOP);
-        for(PedidosDTO p:listar){
-            pie=new PieChart.Data(p.getNomCatalogo(),p.getPrecio());
-            pie.setName(String.valueOf(p.getPrecio()));
-            pie.nameProperty().set(p.getNomCatalogo());
-            piedata=FXCollections.observableArrayList(pie);
-            installTooltip(pie);
-            pcReporteGananciaMes.getData().addAll(piedata);
-            System.out.println(p.getNomCatalogo()+" precio: "+p.getPrecio());
-        }
-
-        //creatae piechart and pie data
-
+    private void litadoReportes(){
+        cmbfiltrarReportes1=FXCollections.observableArrayList("Promotores-monto","fecha","Catalogos-ventas","Ventas totales del mes");
+        cmbReporte.setItems(cmbfiltrarReportes1);
     }
     
+    private File file(){
+        filechooser=new FileChooser();
+        File file = null;
+        Window stage=btnImportar.getScene().getWindow();
+        filechooser.setTitle("Guardar Reporte");
+        filechooser.setInitialFileName("mysave");
+        filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(
+                "Excel","*.xlsx","xlx"
+        ));
+        try {
+            file=filechooser.showSaveDialog(stage);
+            filechooser.setInitialDirectory(file.getParentFile());
+
+        }catch (Exception e){
+            e.getMessage();
+        }
+        return file;
+    } 
+    
+    @FXML
+    private void btnExportarReportes(ActionEvent actionEvent) {
+        File file=file();
+        switch(cmbReporte.getValue()){
+            case "Promotores-monto":{
+                PromotorGanancia.PromotorG(file);
+            }break;
+            case "fecha":{
+                PromotorGanancia.FechaPedido(file);
+            }break;
+            case "Ventas totales del mes":{
+                PromotorGanancia.ReporteMes(file);
+            }
+        }
+    }
     private void installTooltip(PieChart.Data pie){
         String msg=String.format("%s:%s",pie.getName(),pie.getPieValue());
         Tooltip tt=new Tooltip(msg);
         tt.setStyle("-fx-background-color: gray;-fx-text-fill:whitesmoke;");
         Tooltip.install(pie.getNode(),tt);
     }
+
+
 
     private void createBarChart() {
 
