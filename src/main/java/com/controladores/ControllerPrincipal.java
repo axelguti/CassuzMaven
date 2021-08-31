@@ -1394,8 +1394,6 @@ public class ControllerPrincipal extends Component implements Initializable {
         mostrarlistaEstado();
     }
 
-
-
     @FXML
     private void tipoPagos(ActionEvent actionEvent) {
         listaTipoPago();
