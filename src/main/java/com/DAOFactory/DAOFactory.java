@@ -21,4 +21,5 @@ public class DAOFactory {
     public static ListaPrecioInterface getListaPrecioDAO(){return new ListaPreciosDAO();}
     public static PedidoInterface getPedidoDAO(){return new PedidoDAO();}
     public static CajaInterface getCajaDAO(){return new CajaDAO();}
+    public static DataInterface getCargaDatosDAO(){return new CargaDatosDAO();}
 }

@@ -1,6 +1,8 @@
 package com.DTO;
 
-import javafx.collections.ObservableList;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.ComboBox;
 
 import java.time.LocalDate;
@@ -38,6 +40,7 @@ public class PedidosDTO extends PromotorDTO{
         this.codProducto = codProducto;
         this.tipopago = tipopago;
         this.banco = banco;
+
     }
 
     public String getFecha() {
@@ -57,12 +60,23 @@ public class PedidosDTO extends PromotorDTO{
         return this;
     }
 
-    public PedidosDTO(String es){
-        this.es=es;
+    public void estados(){
+        switch (getEs()){
+            case "Proceso":{
+                estado.getSelectionModel().select("Proceso");
+            }break;
+            case "En Almacen":{
+                estado.getSelectionModel().select("En Almacen");
+            }break;
+            case "Entregado":{
+                estado.getSelectionModel().select("Entregado");
+            }
+        }
     }
-    public void setEstado(ComboBox<String> estado) {
-        this.estado = estado;
 
+    public void setEstado(ComboBox<String> estado) {
+
+        this.estado = estado;
     }
 
     public String getEs() {
@@ -70,10 +84,11 @@ public class PedidosDTO extends PromotorDTO{
     }
 
     public void setEs(String es) {
-        this.es = es;
+        this.es=es;
     }
 
     public ComboBox<String> getEstado() {
+
         return estado;
     }
 

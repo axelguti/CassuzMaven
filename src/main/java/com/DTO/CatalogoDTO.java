@@ -16,7 +16,6 @@ public class CatalogoDTO {
         this.nombre = nombre;
         this.representante = representante;
         this.telefono = telefono;
-        this.estado = estado;
         this.buton = buton;
     }
 

@@ -26,7 +26,7 @@ public class PedidoDAO implements PedidoInterface {
 
         try{
             cn= Conexion.getConexion();
-            stm = Objects.requireNonNull(cn).prepareCall("EXEC SP_C_PEDIDO ?,?,?,?,?,?,?,?,?,?,?,?");
+            stm = Objects.requireNonNull(cn).prepareCall("exec SP_C_PEDIDO ?,?,?,?,?,?,?,?,?,?,?,?");
             stm.setString(1, pedidosDTO.getDni());
             stm.setString(2, pedidosDTO.getNomCatalogo());
             stm.setInt(3, pedidosDTO.getPagina());

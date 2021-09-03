@@ -1,13 +1,22 @@
 package com.DTO;
 
 public class ListaPreciosDTO {
+    private int codigo;
     private String catalogo;
     private int pagina;
     private String marca;
-    private String codigo;
-    private String color;
+    private String estilo;
+    private String descripcion;
     private double preciopublico;
     private double preciopromotor;
+
+    public int getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(int codigo) {
+        this.codigo = codigo;
+    }
 
     public String getCatalogo() {
         return catalogo;
@@ -33,20 +42,20 @@ public class ListaPreciosDTO {
         this.marca = marca;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getEstilo() {
+        return estilo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setEstilo(String estilo) {
+        this.estilo = estilo;
     }
 
-    public String getColor() {
-        return color;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public double getPreciopublico() {
@@ -69,7 +78,7 @@ public class ListaPreciosDTO {
         System.out.println(getPagina());
         System.out.println(getMarca());
         System.out.println(getCodigo());
-        System.out.println(getColor());
+        System.out.println(getDescripcion());
         System.out.println(getPreciopublico());
         System.out.println(getPreciopromotor());
     }

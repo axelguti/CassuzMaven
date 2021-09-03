@@ -4,11 +4,10 @@ package com.controladores;
 import com.DAOFactory.DAOFactory;
 import com.DTO.*;
 import com.Reportes.PromotorGanancia;
-import com.Util.Constantes;
 import com.Util.Estado;
 import com.beans.IconTest;
-import com.dao.PedidoDAO;
 import com.interfaces.*;
+
 import com.jfoenix.controls.JFXToggleButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,28 +16,22 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Side;
-import javafx.scene.Group;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import javafx.util.Callback;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 
 import javax.swing.*;
 import java.awt.*;
+
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
@@ -47,8 +40,8 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class ControllerPrincipal extends Component implements Initializable {
 
@@ -80,8 +73,6 @@ public class ControllerPrincipal extends Component implements Initializable {
     @FXML
     private TextField txtMontoCaja;
     @FXML
-    private ObservableList<String> espedidos;
-    @FXML
     private Button btnLimpiarCaja;
     @FXML
     private TableView<CajaDTO> tblDatosCajaDelDia;
@@ -95,6 +86,8 @@ public class ControllerPrincipal extends Component implements Initializable {
     private TableColumn<CajaDTO,String> tcPedidosHoraCaja;
     @FXML
     private TextArea taDescripcion;
+
+    private ObservableList<String> cmbfiltrarReportes1;
     @FXML
     private ComboBox<String> cmbBuscarEstadoPedido;
     @FXML
@@ -211,7 +204,6 @@ public class ControllerPrincipal extends Component implements Initializable {
     private ComboBox<String> cmbCatalogosP;
     @FXML
     private TextField txtPPrecio;
-    private FileChooser fc;
     @FXML
     private TextField txtPPagina;
     @FXML
@@ -334,17 +326,19 @@ public class ControllerPrincipal extends Component implements Initializable {
     private final ListaPrecioInterface listaPre = DAOFactory.getListaPrecioDAO();
     @FXML
     private final PedidoInterface pedido = DAOFactory.getPedidoDAO();
-
-    private ObservableList<String> cmbfiltrarReportes2;
-
-    private ObservableList<String> cmbfiltrarReportes1;
+    private ObservableList<String> espedidos;
+    @FXML
+    private ComboBox<String> estadoPedido;
+    private DataInterface cargaDatas=DAOFactory.getCargaDatosDAO();
     private final CajaInterface caja=DAOFactory.getCajaDAO();
     @FXML
     private FileChooser filechooser;
 
+    private TableCell<PedidosDTO, String> cell;
 
 
-    @Override
+
+        @Override
     public void initialize(URL url, ResourceBundle rb) {
         MostrarLista();
         MostrarListaCatalogo();
@@ -360,7 +354,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         listaEstado();
         mostrarCaja();
         sumaTotalCaja();
-        loaddata();
+        cargardatos();
         sumatotalCajaPorDia();
         createBarChart();
         validarToggleButton();
@@ -398,7 +392,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void mostrarlistaEstado(){
         List<PedidosDTO> listar = pedido.listar();
         listaPedidos = FXCollections.observableArrayList();
-            espedidos=FXCollections.observableArrayList("Proceso","En Almacen","Entregado");
+        espedidos=FXCollections.observableArrayList("Proceso","En Almacen","Entregado");
         tcPedidoEstadoID.setCellValueFactory(new PropertyValueFactory<>("idPedido"));
         tcPedidoEstadoDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
         tcPedidoEstadoNombres.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -412,42 +406,29 @@ public class ControllerPrincipal extends Component implements Initializable {
         tcTipoPago.setCellValueFactory(new PropertyValueFactory<>("tipopago"));
         tcBanco.setCellValueFactory(new PropertyValueFactory<>("banco"));
         tcPedidosEstado.setCellFactory((col)->{
-
-
             TableCell<PedidosDTO, String> cell = new TableCell<PedidosDTO, String>(){
                 ComboBox<String> cmb=new ComboBox<String>(espedidos);
-
-
-
-
                 @Override
                 public void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     // Texto de visualización del botón
 
-
                     // Establecer el color del botón
                     cmb.setStyle("-fx-background-color: #00bcff;-fx-text-fill: #ffffff");
                     // Evento de clic de botón
-                    {
 
 
-                    }
                     if (empty) {
                         // Si esta columna está vacía, no se agregará ningún elemento por defecto
                         setText(null);
                         setGraphic(null);
                     } else {
-                        {
-
-                        }
                         cmb.setOnAction((col) -> {
                             // Obtener la posición en la lista y luego obtener los datos de información correspondientes a la lista
                             PedidosDTO p = listar.get(getIndex());
                             p.setEs(cmb.getValue());
                             p.setIdPedido(p.getIdPedido());
                             pedido.modificarEstado(p);
-                            // Agregar evento de botón por ti mismo
                         });
                         for (PedidosDTO p:listar){
                             switch (p.getEs()){
@@ -462,8 +443,6 @@ public class ControllerPrincipal extends Component implements Initializable {
                                 }
                             }
                         }
-
-
                         // Botón de carga
                         this.setGraphic(cmb);
                     }
@@ -471,9 +450,8 @@ public class ControllerPrincipal extends Component implements Initializable {
             };
             return cell;
         });
-
-        tblDatosEstado.setItems(listaPedidos);
-        loaddata();
+        tblDatosEstado.getItems().addAll(listaPedidos);
+        cargardatos();
     }
 
 
@@ -491,22 +469,22 @@ public class ControllerPrincipal extends Component implements Initializable {
             }
         }
         tblDatosCatalogo.setItems(datos);
-    }
 
-    private void loaddata(){
+    }
+    private void cargardatos(){
         ObservableList<PedidosDTO> datos=FXCollections.observableArrayList();
+
         List<PedidosDTO> listar=pedido.listar();
         for(PedidosDTO p:listar){
+            estadoPedido=new ComboBox<>(espedidos);
             datos.addAll(new PedidosDTO(p.getDni(),p.getNombre(),p.getApellido(),p.getIdPedido(),p.getFechaPedido(),p.getNomCatalogo(),
                     p.getPagina(),p.getMarca(),p.getColor(),p.getPrecio(),p.getTalla(),p.getCodProducto(),p.getTipopago(),p.getBanco()));
+            System.out.println(p.getEs());
         }
 
 
         tblDatosEstado.setItems(datos);
     }
-
-
-
 
     //Lista de roles
     private void listaRol() {
@@ -755,6 +733,7 @@ public class ControllerPrincipal extends Component implements Initializable {
         txtUContraseña.setText("");
         txtURepiteContraseña.setText("");
     }
+
 
     //Elimina al usuario
     @FXML
@@ -1005,8 +984,9 @@ public class ControllerPrincipal extends Component implements Initializable {
         try {
             File file=filechooser.showOpenDialog(stage);
             filechooser.setInitialDirectory(file.getParentFile());
-            r=listaPre.Importar(file);
-            JOptionPane.showMessageDialog(null,r,"Importacion",1);
+            System.out.println(file);
+            JOptionPane.showMessageDialog(null,listaPre.Importar(file),"Importacion",1);
+            System.out.println(listaPre.Importar(file));
         }catch (Exception e){
             e.getMessage();
         }
@@ -1159,6 +1139,28 @@ public class ControllerPrincipal extends Component implements Initializable {
 
     @FXML
     private void ListaPedidos(MouseEvent mouseEvent) {
+        PedidosDTO pedidos = tblDatosPedidos.getSelectionModel().getSelectedItem();
+        if (pedidos == null) {
+            MostrarLista();
+        } else {
+            lblIdpedido.setText(String.valueOf(pedidos.getIdPedido()));
+            cmbPromotorPedido.getSelectionModel().select(pedidos.getDni());
+            txtApellidoPromotorPedido.setText(pedidos.getApellido());
+            txtNombrePromotorPedido.setText(pedidos.getNombre());
+            cmbCatalogosP.getSelectionModel().select(pedidos.getNomCatalogo());
+            txtPCodigo.setText(pedidos.getCodProducto());
+            txtPPagina.setText(String.valueOf(pedidos.getPagina()));
+            txtPMarca.setText(pedidos.getMarca());
+            txtPColor.setText(pedidos.getColor());
+            txtPPrecio.setText(String.valueOf(pedidos.getPrecio()));
+            txtPTalla.setText(pedidos.getTalla());
+
+        }
+
+    }
+
+    @FXML
+    private void ListaPedidosEstado(MouseEvent mouseEvent) {
         PedidosDTO pedidos = tblDatosPedidos.getSelectionModel().getSelectedItem();
         if (pedidos == null) {
             MostrarLista();
@@ -1422,7 +1424,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     }
 
     private void litadoReportes(){
-        cmbfiltrarReportes1=FXCollections.observableArrayList("Promotores-monto","fecha","Catalogos-ventas","Ventas totales del mes");
+        cmbfiltrarReportes1=FXCollections.observableArrayList("ventas por promotor","ventas totales por catalogo","Ventas totales del mes");
         cmbReporte.setItems(cmbfiltrarReportes1);
     }
     
@@ -1449,10 +1451,10 @@ public class ControllerPrincipal extends Component implements Initializable {
     private void btnExportarReportes(ActionEvent actionEvent) {
         File file=file();
         switch(cmbReporte.getValue()){
-            case "Promotores-monto":{
+            case "ventas por promotor":{
                 PromotorGanancia.PromotorG(file);
             }break;
-            case "fecha":{
+            case "ventas totales por catalogo":{
                 PromotorGanancia.FechaPedido(file);
             }break;
             case "Ventas totales del mes":{
