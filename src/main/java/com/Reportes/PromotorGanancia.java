@@ -15,10 +15,11 @@ public class PromotorGanancia {
     private static XSSFWorkbook wb = new XSSFWorkbook();
     private static XSSFSheet sheet;
     private static XSSFRow row;
+    private static XSSFCreationHelper creationHelper;
 
     public static void PromotorG(File f){
                // crea libro
-        sheet = wb.createSheet("Promotores");    // crea hoja
+        sheet = wb.createSheet(f.toString());    // crea hoja
         row=sheet.createRow(0);
         XSSFCellStyle cabecera=Cabecera(wb);
         XSSFCellStyle cuerpo=Cuerpo(wb);
@@ -71,7 +72,7 @@ public class PromotorGanancia {
 
     public static void FechaPedido(File f) {
                         // crea libro
-        sheet = wb.createSheet("Fecha Reporte");    // crea hoja
+        sheet = wb.createSheet(f.toString());    // crea hoja
         XSSFRow row=sheet.createRow(0);
 
         XSSFCellStyle cabecera=Cabecera(wb);
@@ -151,7 +152,7 @@ public class PromotorGanancia {
 
     public static void ReporteMes(File file) {
         XSSFWorkbook wb=new XSSFWorkbook();
-        XSSFSheet sheet=wb.createSheet("Reporte del Mes");
+        XSSFSheet sheet=wb.createSheet(file.toString());
         XSSFRow xssfRow = sheet.createRow(0);
         sheet.setColumnWidth(0,1200);
         sheet.setColumnWidth(2,8000);
@@ -192,6 +193,113 @@ public class PromotorGanancia {
             cell2.setCellStyle(cuerpo);
             cell3.setCellStyle(cuerpo);
             cell4.setCellStyle(cuerpo);
+            i++;
+        }
+
+        try(OutputStream out=new FileOutputStream(file)){
+            JOptionPane.showMessageDialog(null,"Reporte Creado","Save",1);
+            wb.write(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+    public static void ReporteTotalPedido(File file) {
+        creationHelper= wb.getCreationHelper();
+        XSSFSheet sheet=wb.createSheet(file.toString());
+        XSSFRow xssfRow = sheet.createRow(0);
+        sheet.setColumnWidth(0,1200);
+        sheet.setColumnWidth(2,8000);
+        sheet.setColumnWidth(8,8000);
+        sheet.setColumnWidth(3,4000);
+        sheet.setColumnWidth(11,4000);
+        sheet.setColumnWidth(9,3500);
+        sheet.setColumnWidth(10,3500);
+        XSSFCellStyle cabecera=Cabecera(wb);
+        XSSFCellStyle cuerpo=Cuerpo(wb);
+        XSSFCellStyle formatfech=Cuerpo(wb);
+        XSSFCell cell1=xssfRow.createCell((short) 0);
+        cell1.setCellValue("Nro");
+        XSSFCell cell2=xssfRow.createCell((short) 1);
+        cell2.setCellValue("DNI");
+        XSSFCell cell3=xssfRow.createCell((short) 2);
+        cell3.setCellValue("Nombres");
+        XSSFCell cell4=xssfRow.createCell((short) 3);
+        cell4.setCellValue("Catalogo");
+        XSSFCell cell5=xssfRow.createCell((short) 4);
+        cell5.setCellValue("Codigo");
+        XSSFCell cell6=xssfRow.createCell((short) 5);
+        cell6.setCellValue("Marca");
+        XSSFCell cell7=xssfRow.createCell((short) 6);
+        cell7.setCellValue("color");
+        XSSFCell cell8=xssfRow.createCell((short) 7);
+        cell8.setCellValue("Precio");
+        XSSFCell cell9=xssfRow.createCell((short) 8);
+        cell9.setCellValue("Fecha");
+        XSSFCell cell10=xssfRow.createCell((short) 9);
+        cell10.setCellValue("Tipo Pago");
+        XSSFCell cell11=xssfRow.createCell((short) 10);
+        cell11.setCellValue("Banco");
+        XSSFCell cell12=xssfRow.createCell((short) 11);
+        cell12.setCellValue("Estado");
+
+
+        cell1.setCellStyle(cabecera);
+        cell1.setCellStyle(cabecera);
+        cell2.setCellStyle(cabecera);
+        cell3.setCellStyle(cabecera);
+        cell4.setCellStyle(cabecera);
+        cell5.setCellStyle(cabecera);
+        cell6.setCellStyle(cabecera);
+        cell7.setCellStyle(cabecera);
+        cell8.setCellStyle(cabecera);
+        cell9.setCellStyle(cabecera);
+        cell10.setCellStyle(cabecera);
+        cell11.setCellStyle(cabecera);
+        PedidoInterface dao=DAOFactory.getPedidoDAO();
+        List<PedidosDTO> listar=dao.listar();
+        int i=1;
+
+        for(PedidosDTO p:listar){
+            formatfech.setDataFormat(creationHelper.createDataFormat().
+                    getFormat("MMMM dd, yyyy"));
+            xssfRow=sheet.createRow((short) i);
+            cell1=xssfRow.createCell((short) 0);
+            cell1.setCellValue(" "+i);
+            cell2=xssfRow.createCell((short) 1);
+            cell2.setCellValue(p.getDni());
+            cell3=xssfRow.createCell((short) 2);
+            cell3.setCellValue(p.getNombre());
+            cell4=xssfRow.createCell((short) 3);
+            cell4.setCellValue(p.getNomCatalogo());
+            cell5=xssfRow.createCell((short) 4);
+            cell5.setCellValue(p.getCodProducto());
+            cell6=xssfRow.createCell((short) 5);
+            cell6.setCellValue(p.getMarca());
+            cell7=xssfRow.createCell((short) 6);
+            cell7.setCellValue(p.getColor());
+            cell8=xssfRow.createCell((short) 7);
+            cell8.setCellValue(p.getPrecio());
+            cell9=xssfRow.createCell((short) 8);
+            cell9.setCellValue(p.getFechaPedido());
+            cell10=xssfRow.createCell((short) 9);
+            cell10.setCellValue(p.getTipopago());
+            cell11=xssfRow.createCell((short) 10);
+            cell11.setCellValue(p.getBanco());
+            cell12=xssfRow.createCell((short) 11);
+            cell12.setCellValue(p.getEs());
+            cell1.setCellStyle(cuerpo);
+            cell2.setCellStyle(cuerpo);
+            cell3.setCellStyle(cuerpo);
+            cell4.setCellStyle(cuerpo);
+            cell5.setCellStyle(cuerpo);
+            cell6.setCellStyle(cuerpo);
+            cell7.setCellStyle(cuerpo);
+            cell8.setCellStyle(cuerpo);
+            cell9.setCellStyle(formatfech);
+            cell10.setCellStyle(cuerpo);
+            cell11.setCellStyle(cuerpo);
+            cell12.setCellStyle(cuerpo);
             i++;
         }
 

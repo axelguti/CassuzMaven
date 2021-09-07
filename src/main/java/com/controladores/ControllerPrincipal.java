@@ -340,6 +340,7 @@ public class ControllerPrincipal extends Component implements Initializable {
 
         @Override
     public void initialize(URL url, ResourceBundle rb) {
+            System.out.println(System.getProperties());
         MostrarLista();
         MostrarListaCatalogo();
         mostrarUsuario();
@@ -1424,7 +1425,7 @@ public class ControllerPrincipal extends Component implements Initializable {
     }
 
     private void litadoReportes(){
-        cmbfiltrarReportes1=FXCollections.observableArrayList("ventas por promotor","ventas totales por catalogo","Ventas totales del mes");
+        cmbfiltrarReportes1=FXCollections.observableArrayList("ventas por promotor","ventas totales por catalogo","Ventas totales del mes","Reporte Pedido");
         cmbReporte.setItems(cmbfiltrarReportes1);
     }
     
@@ -1459,7 +1460,10 @@ public class ControllerPrincipal extends Component implements Initializable {
             }break;
             case "Ventas totales del mes":{
                 PromotorGanancia.ReporteMes(file);
-            }
+            }break;
+            case "Reporte Pedido":{
+                PromotorGanancia.ReporteTotalPedido(file);
+            }break;
         }
     }
     private void installTooltip(PieChart.Data pie){
